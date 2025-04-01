@@ -17,6 +17,7 @@
 6. Locate `Assets/Firebase/Editor/Firebase.Editor.dll.meta` and uncheck `Validate References` in the inspector.
 
 7. Install `iOS Build Support` in editor modules.
+8. Add firebase google-services.json to `HURO_VR/Assets`
 
 
 ## Documentation
