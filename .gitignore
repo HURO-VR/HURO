@@ -11,6 +11,8 @@
 /HURO_VR/[Uu]ser[Ss]ettings/
 
 /firebase_CLI/functions/node_modules/
+/frontend/firebase/config.ts
+/HURO_VR/google-services.json
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
