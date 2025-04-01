@@ -10,13 +10,14 @@ This is an [Expo](https://expo.dev) project with deployment capabilities to mobi
    npm install
    ```
 
-2. **Start the app**
+2. **Add Firebase API key to `frontend/firebase/config.ts`**
+3. **Start the app**
 
    ```bash
     npx expo start
    ```
 
-3. **Open web view:**
+4. **Open web view:**
 
    Press `w`
 
