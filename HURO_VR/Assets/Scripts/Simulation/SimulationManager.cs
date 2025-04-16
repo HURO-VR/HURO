@@ -72,6 +72,7 @@ public class SimulationManager : MonoBehaviour
     
     public static event Action OnSimulationStart;
     public static event Action OnSimulationEnd;
+    public static SimulationManager Instance { get; private set; }
 
     #region Unity Methods
 
@@ -80,6 +81,7 @@ public class SimulationManager : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        if (Instance == null) Instance = this;
         // Ensure server is enabled at Runtime on Quest.
 #if UNITY_ANDROID
         runOnServer = true;
