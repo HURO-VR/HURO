@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Entity_Scripts;
 using UnityEngine;
 
 /// <summary>
 /// Represents a robot entity that navigates towards a goal within the simulation.
 /// </summary>
 [RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(EntityLocator))]
 public class RobotEntity : MonoBehaviour
 {
     #region Private Variables
