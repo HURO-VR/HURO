@@ -63,8 +63,8 @@ public class SessionManager : MonoBehaviour
     /// </summary>
     void Awake()
     {
-        db = FindAnyObjectByType<Storage>();
-        db.SetOrganization(Organization_ID);
+        //db = FindAnyObjectByType<Storage>();
+        //db.SetOrganization(Organization_ID);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class SessionManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        _ = db.GetAllSimulationBundles((data) =>
+        /*_ = db.GetAllSimulationBundles((data) =>
         {
             simulationMetaData = data;
             List<string> options = new List<string>();
@@ -92,7 +92,7 @@ public class SessionManager : MonoBehaviour
                 SetSelectedSimulation(0);
 
             Debug.Log($"HURO: Loaded {data?.Length} bundles into menu.");
-        });
+        });*/
     }
 
     /// <summary>
@@ -118,10 +118,10 @@ public class SessionManager : MonoBehaviour
         if (index < simulationMetaData?.Length)
         {
             selectedSimulation = simulationMetaData[index];
-            db.GetFirestoreCollection($"organizations/{Organization_ID}/simulations/{selectedSimulation.ID}/runs", (data) =>
+            /*db.GetFirestoreCollection($"organizations/{Organization_ID}/simulations/{selectedSimulation.ID}/runs", (data) =>
             {
                 numberRuns = data.Count;
-            });
+            });*/
         }
         else
         {
@@ -140,7 +140,7 @@ public class SessionManager : MonoBehaviour
         data.simID = selectedSimulation.ID;
         name = $"Run {numberRuns + 1}";
         data.runID = name + "_" + data.runID;
-        db.UploadMetadata($"organizations/{Organization_ID}/simulations/{selectedSimulation.ID}/runs/{data.runID}", data.ToDictionary(), OnCompleteUpload);
+        //db.UploadMetadata($"organizations/{Organization_ID}/simulations/{selectedSimulation.ID}/runs/{data.runID}", data.ToDictionary(), OnCompleteUpload);
     }
 
     #endregion

@@ -1287,6 +1287,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 746f1679793aa8745a3e0995bd2d659f, type: 3}
+--- !u!1 &388677943 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 71007824391301750, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
+  m_PrefabInstance: {fileID: 6856648936028982362}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &418248272
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6328,9 +6333,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a619c59609659408f2af8739c9da68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copyOnStart: 1
-  overwriteExistingFiles: 1
-  fileExtensionsToSkip: []
 --- !u!4 &1914110794
 Transform:
   m_ObjectHideFlags: 0
@@ -6904,7 +6906,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2100932005
 Transform:
   m_ObjectHideFlags: 0
@@ -12873,13 +12875,30 @@ PrefabInstance:
     - {fileID: 7686753078774123595, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 71007824391301750, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6856648936028982364}
   m_SourcePrefab: {fileID: 100100000, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
 --- !u!4 &6856648936028982363 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1691050571577666721, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
   m_PrefabInstance: {fileID: 6856648936028982362}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6856648936028982364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388677943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5c9695b222b9fe44af547eea53bdeb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClips: []
+  audioOnStart: 
 --- !u!1 &6861524367654220468
 GameObject:
   m_ObjectHideFlags: 0
