@@ -3,11 +3,14 @@ from RVO import RVO_update, compute_V_des
 from StringToObject import StringToObject
 import argparse
 
-def main():
-    parser = argparse.ArgumentParser(description="Calculate square velocity.")
-    parser.add_argument("json_str", type=str, help="object data")
-    args = parser.parse_args()
-    scene_data = StringToObject(args.json_str)
+def main(input_str):
+    if (input_str == None):
+        parser = argparse.ArgumentParser(description="Calculate square velocity.")
+        parser.add_argument("json_str", type=str, help="object data")
+        args = parser.parse_args()
+        scene_data = StringToObject(args.json_str)
+    else:
+        scene_data = StringToObject(input_str)
     #------------------------------
     #define workspace model
     ws_model = dict()
