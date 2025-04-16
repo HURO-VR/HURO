@@ -69,6 +69,9 @@ public class SimulationManager : MonoBehaviour
     private float totalTime = 0f;
 
     #endregion
+    
+    public static event Action OnSimulationStart;
+    public static event Action OnSimulationEnd;
 
     #region Unity Methods
 
@@ -162,6 +165,7 @@ public class SimulationManager : MonoBehaviour
         }
         else
         {
+            
             engine = Python.CreateEngine();
             SetImportPaths(engine);
             algorithm = engine.ExecuteFile(Application.streamingAssetsPath + @"/Python/main.py");
@@ -172,6 +176,7 @@ public class SimulationManager : MonoBehaviour
 
         sceneData.InitSceneData();
         RunDataCollector.InitializeSimulation(sceneData.LoadOutput());
+        audioLibrary.PlayAudio(AudioLibrary.AudioType.SmallBeep);
         initAlgorithm = true;
     }
 
@@ -184,7 +189,11 @@ public class SimulationManager : MonoBehaviour
         if (!start)
             return; // This will be false when being called from the menu.
         if (audioLibrary && !algorithmRunning)
+        {
             audioLibrary.PlayAudio(AudioLibrary.AudioType.StartSimulation);
+            OnSimulationStart?.Invoke();
+
+        }
         algorithmRunning = true;
         if (restart)
             RandomizeObjectLocations();
@@ -238,8 +247,9 @@ public class SimulationManager : MonoBehaviour
         {
             RunDataCollector.EndSimulation();
             PauseAlgorithm();
-            sessionManager?.UploadSimulationRunData(RunDataCollector.runMetadata);
+            //sessionManager?.UploadSimulationRunData(RunDataCollector.runMetadata);
             audioLibrary.PlayAudio(AudioLibrary.AudioType.EndSimulation);
+            OnSimulationEnd?.Invoke();
             restart = true;
         }
     }
@@ -298,7 +308,7 @@ public class SimulationManager : MonoBehaviour
     {
         if (output.Length == 0)
         {
-            Debug.LogWarning("SSH Command did not output any ");
+            Debug.LogError("SSH Command did not output any ");
         }
         else
         {
@@ -380,7 +390,8 @@ public class SimulationManager : MonoBehaviour
         {
             Debug.LogWarning("Terminating because robots reached goals.");
         }
-        return (timeout || reachedGoals || deadlock);
+
+        return reachedGoals;
     }
 
     /// <summary>
@@ -412,7 +423,7 @@ public class SimulationManager : MonoBehaviour
             if ((runOnServer && hitServerAgain) || !runOnServer)
             {
                 string input = sceneData.GetAlgorithmInput();
-                if (runOnServer && hitServerAgain)
+                if (runOnServer)
                 {
                     hitServerAgain = false;
                     RunDataCollector.LogServerHit();
@@ -429,6 +440,7 @@ public class SimulationManager : MonoBehaviour
             DebugLogs(e.ToString());
             RunDataCollector.LogWarning(e.ToString());
             EndSimulation();
+            Debug.LogError(e.ToString());
             DebugLogs("Stopping Simulation");
         }
     }

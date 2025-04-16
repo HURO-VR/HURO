@@ -1,8 +1,11 @@
+using Entity_Scripts;
 using UnityEngine;
 
 /// <summary>
 /// Represents the goal entity that robots can interact with during the simulation.
 /// </summary>
+/// 
+[RequireComponent(typeof(EntityLocator))]
 public class GoalEntity : MonoBehaviour
 {
     #region Private Variables
