@@ -3,9 +3,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System;
 using TMPro;
-using Microsoft.Scripting.Hosting;
 using System.Runtime.CompilerServices;
-using IronPython.Hosting;
 using Meta.XR.MRUtilityKit;
 
 [RequireComponent(typeof(SceneDataManager))]
@@ -54,7 +52,6 @@ public class SimulationManager : MonoBehaviour
 
     #region Private Variables
 
-    private ScriptEngine engine;
     private dynamic algorithm;
     private bool initAlgorithm = false;
     private bool algorithmRunning = false;
@@ -84,7 +81,7 @@ public class SimulationManager : MonoBehaviour
         if (Instance == null) Instance = this;
         // Ensure server is enabled at Runtime on Quest.
 #if UNITY_ANDROID
-        runOnServer = true;
+        //runOnServer = true;
 #endif
         try
         {
@@ -168,9 +165,6 @@ public class SimulationManager : MonoBehaviour
         else
         {
             
-            engine = Python.CreateEngine();
-            SetImportPaths(engine);
-            algorithm = engine.ExecuteFile(Application.streamingAssetsPath + @"/Python/main.py");
         }
 
         if (!sceneData)
@@ -190,6 +184,7 @@ public class SimulationManager : MonoBehaviour
     {
         if (!start)
             return; // This will be false when being called from the menu.
+        if (!initAlgorithm) InitAlgorithm();
         if (audioLibrary && !algorithmRunning)
         {
             audioLibrary.PlayAudio(AudioLibrary.AudioType.StartSimulation);
@@ -259,20 +254,7 @@ public class SimulationManager : MonoBehaviour
     #endregion
 
     #region Private Functions
-
-    /// <summary>
-    /// Sets the search paths for the IronPython engine.
-    /// </summary>
-    /// <param name="engine">The IronPython script engine.</param>
-    void SetImportPaths(ScriptEngine engine)
-    {
-        ICollection<string> searchPaths = engine.GetSearchPaths();
-        // Path to the folder of filename.
-        searchPaths.Add(Application.streamingAssetsPath + @"/Python/");
-        // Path to the Python standard library.
-        searchPaths.Add(Application.dataPath + @"/Plugins/IronPy/Lib/");
-        engine.SetSearchPaths(searchPaths);
-    }
+    
 
     /// <summary>
     /// Pauses the algorithm by stopping all robot movement and resetting the timer.
@@ -455,7 +437,7 @@ public class SimulationManager : MonoBehaviour
     /// <param name="line">The caller line number (automatically provided).</param>
     void DebugLogs(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
-        debugLogs.text += "\n\n" + message;
+        if (debugLogs) debugLogs.text += "\n\n" + message;
         Debug.Log($"HURO: {file} @line:{line}: " + message);
     }
 

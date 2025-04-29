@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2419879320758249191}
   - component: {fileID: 4498825768318266576}
   - component: {fileID: 6556418209713486585}
+  - component: {fileID: 3543760215881410818}
   m_Layer: 0
   m_Name: Robot
   m_TagString: Robot
@@ -149,3 +150,16 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3543760215881410818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5209262279275128047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472bbeec94744810b21a23572a3b0e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  locatorPrefab: {fileID: 727092180436936634, guid: 2a69cce47cc95584494cc63176bc75d3, type: 3}

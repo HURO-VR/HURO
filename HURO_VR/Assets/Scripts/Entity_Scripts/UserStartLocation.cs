@@ -21,6 +21,7 @@ namespace Entity_Scripts
             OnFinishCountDown += () =>
             {
                 SimulationManager.Instance.StartAlgorithm();
+                gameObject.SetActive(false);
             };
         }
 
