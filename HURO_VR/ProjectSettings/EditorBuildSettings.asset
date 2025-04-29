@@ -10,18 +10,20 @@ EditorBuildSettings:
     guid: ecf49f9ba49102347be26c9c92b4e6f2
   - enabled: 0
     path: Assets/Scenes/MixedReality.unity
-    guid: 712a439c522447d4586780016bcbd7c2
+    guid: da3bf7746037dfb4aab745d5aac3f0a9
   - enabled: 0
     path: Assets/Samples/Meta MR Utility Kit/72.0.0/Basic/MRUKBase.unity
     guid: 21549dbcb1294de4fafd68fca195dda5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MixedReality.unity
     guid: da3bf7746037dfb4aab745d5aac3f0a9
+  - enabled: 1
+    path: Assets/Scenes/Centennial.unity
+    guid: 430f79d3347bcf643ac0e4860fae7619
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 8dcab5ac271d78d499248b81b2fdc496, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f0ac5ca0d5ce1474a8d192ae228bcee1, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 586f0cb5f6ad7ae448158c8d67450291, type: 2}
-  - enabled: 1
-    path: Assets/Scenes/AdvancedUI-Python_Runner.unity
-    guid: 4490d763a891d41acb731e62f0d20509
-  m_configObjects: {}
+    enabled: {fileID: 0}
+    guid: {fileID: 0}
+    path: {fileID: 0}
