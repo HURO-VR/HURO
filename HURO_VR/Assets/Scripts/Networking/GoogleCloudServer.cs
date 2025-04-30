@@ -14,7 +14,7 @@ public class GoogleCloudServer : MonoBehaviour
     // SSH username
     string username = "accou";
 
-    string privateKeyPath = "/gcp-vm-key";
+    string privateKeyPath = "/google_compute_engine";
 
     // Path to python script on VM.
     string remoteScriptPath = "/home/accou/Python_Scripts/Python/main.py"; 
@@ -30,7 +30,7 @@ public class GoogleCloudServer : MonoBehaviour
 
     private void Awake()
     {
-        privateKeyPath = Application.persistentDataPath + privateKeyPath;
+        privateKeyPath = Application.streamingAssetsPath + privateKeyPath;
     }
     // Callback for logging
     private void Log(string message)

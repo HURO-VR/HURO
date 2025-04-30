@@ -58,6 +58,7 @@ public class GoalEntity : MonoBehaviour
     /// <param name="other">The collider that entered the trigger.</param>
     private void OnTriggerEnter(Collider other)
     {
+        if (robot == null) return;
         Debug.Log(other.gameObject.name + " and " + robot.name);
         if (other.gameObject == this.robot)
         {

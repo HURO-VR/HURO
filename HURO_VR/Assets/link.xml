@@ -1,8 +1,0 @@
-<linker>
-  <assembly fullname="Microsoft.Scripting">
-    <type fullname="Microsoft.Scripting.Hosting.ScriptHost" preserve="all"/>
-    <type fullname="Microsoft.Scripting.Hosting.ScriptRuntime" preserve="all"/>
-  </assembly>
-  <assembly fullname="Microsoft.Dynamic" preserve="all"/>
-  <assembly fullname="IronPython" preserve="all"/>
-</linker>

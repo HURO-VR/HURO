@@ -25,12 +25,6 @@ public class SimulationManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI debugLogs;
 
     /// <summary>
-    /// Mark true if running on GCP VM.
-    /// </summary>
-    [Tooltip("Mark true if running on GCP VM.")]
-    [SerializeField] bool runOnServer;
-
-    /// <summary>
     /// Robot and Goal Spawners.
     /// </summary>
     [Tooltip("Robot and Goal Spawners.")]
@@ -80,9 +74,6 @@ public class SimulationManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         // Ensure server is enabled at Runtime on Quest.
-#if UNITY_ANDROID
-        //runOnServer = true;
-#endif
         try
         {
             if (!sceneData) sceneData = GetComponent<SceneDataManager>();
@@ -158,15 +149,7 @@ public class SimulationManager : MonoBehaviour
     /// </summary>
     public void InitAlgorithm()
     {
-        if (runOnServer)
-        {
-            remoteScriptExecutor.OpenSSHConnection();
-        }
-        else
-        {
-            
-        }
-
+        remoteScriptExecutor.OpenSSHConnection();
         if (!sceneData)
             sceneData = GetComponent<SceneDataManager>();
 
@@ -298,8 +281,7 @@ public class SimulationManager : MonoBehaviour
         {
             var newVelocities = JsonConvert.DeserializeObject<float[][]>(output);
             SetNewVelocities(newVelocities);
-            if (runOnServer)
-                hitServerAgain = true;
+            hitServerAgain = true;
         }
     }
 
@@ -404,19 +386,12 @@ public class SimulationManager : MonoBehaviour
         timer = 0f; // Reset timer
         try
         {
-            if ((runOnServer && hitServerAgain) || !runOnServer)
+            if (hitServerAgain)
             {
                 string input = sceneData.GetAlgorithmInput();
-                if (runOnServer)
-                {
-                    hitServerAgain = false;
-                    RunDataCollector.LogServerHit();
-                    RunAlgorithmOnServer(input);
-                }
-                else if (!runOnServer)
-                {
-                    RunAlgorithmLocally(input);
-                }
+                hitServerAgain = false;
+                RunDataCollector.LogServerHit();
+                RunAlgorithmOnServer(input);
             }
         }
         catch (Exception e)

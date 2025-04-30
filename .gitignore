@@ -259,3 +259,5 @@ HURO_VR/Assets/Resources/BillingMode.json.meta
 node_modules
 .env
 /firebase_CLI/functions/node_modules
+*.pub
+HURO_VR/Assets/StreamingAssets/google_compute_engine
