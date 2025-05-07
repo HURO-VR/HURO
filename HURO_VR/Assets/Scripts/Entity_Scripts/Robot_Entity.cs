@@ -89,10 +89,7 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     void Start()
     {
-        if (goal == null)
-        {
-            InitGoal();
-        }
+        InitGoal();
         if (maxVelocity == 0)
         {
             maxVelocity = 2;
@@ -100,18 +97,20 @@ public class RobotEntity : MonoBehaviour
         gameObject.transform.eulerAngles = initialRotation;
     }
 
+    [SerializeField] private float slowRate;
     /// <summary>
     /// Called once per frame.
     /// Monitors deadlock conditions and updates the robot state.
     /// </summary>
     void Update()
     {
-        if (!goal)
-            InitGoal();
-        body.velocity = velocity;
+        if (algorithmRunner.IsRunning() == false)
+            body.velocity = Vector3.zero;
+        else if (!goalReached) 
+            body.velocity = velocity;
         
         // Slow down rate.
-        //velocity *= .98f;
+        velocity *= slowRate;
         if (IsStuck())
         {
             timer += Time.deltaTime;
@@ -167,6 +166,7 @@ public class RobotEntity : MonoBehaviour
         Debug.LogWarning(gameObject.name + " reached goal.");
         goalReached = true;
         velocity = Vector3.zero;
+        body.velocity = Vector3.zero;
         body.isKinematic = true;
     }
 
@@ -229,8 +229,9 @@ public class RobotEntity : MonoBehaviour
                     return;
                 }
             }
+            Debug.LogWarning("Robot " + gameObject.name + " does not have goal.");
+
         }
-        Debug.LogWarning("Robot " + gameObject.name + " does not have goal.");
     }
 
     /// <summary>
