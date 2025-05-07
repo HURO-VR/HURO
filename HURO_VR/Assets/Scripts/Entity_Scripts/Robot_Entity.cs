@@ -15,6 +15,8 @@ public class RobotEntity : MonoBehaviour
     /// <summary>
     /// The goal GameObject assigned to this robot.
     /// </summary>
+    [SerializeField]
+    private GameObject _goal;
     private GameObject goal;
 
     /// <summary>
@@ -36,6 +38,8 @@ public class RobotEntity : MonoBehaviour
     /// Timer used to track potential deadlock duration.
     /// </summary>
     private float timer = 0f;
+    
+    private Vector3 velocity = Vector3.zero;
 
     #endregion
 
@@ -104,7 +108,10 @@ public class RobotEntity : MonoBehaviour
     {
         if (!goal)
             InitGoal();
-
+        body.velocity = velocity;
+        
+        // Slow down rate.
+        //velocity *= .98f;
         if (IsStuck())
         {
             timer += Time.deltaTime;
@@ -144,7 +151,7 @@ public class RobotEntity : MonoBehaviour
     {
         if (!goalReached)
         {
-            body.velocity = new Vector3(x, 0, z);
+            velocity = new Vector3(x, 0, z);
         }
         else
         {
@@ -159,7 +166,7 @@ public class RobotEntity : MonoBehaviour
     {
         Debug.LogWarning(gameObject.name + " reached goal.");
         goalReached = true;
-        body.velocity = Vector3.zero;
+        velocity = Vector3.zero;
         body.isKinematic = true;
     }
 
@@ -204,14 +211,23 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     private void InitGoal()
     {
-        GoalEntity[] goals = FindObjectsByType<GoalEntity>(FindObjectsSortMode.InstanceID);
-        foreach (GoalEntity goal in goals)
+        if (_goal != null)
         {
-            if (!goal.HasRobot())
+            var control = _goal.GetComponent<GoalEntity>();
+            control.SetRobot(gameObject);
+            goal = _goal;
+        }
+        else
+        {
+            GoalEntity[] goals = FindObjectsByType<GoalEntity>(FindObjectsSortMode.InstanceID);
+            foreach (GoalEntity goal in goals)
             {
-                goal.SetRobot(gameObject);
-                this.goal = goal.gameObject;
-                return;
+                if (!goal.HasRobot())
+                {
+                    goal.SetRobot(gameObject);
+                    this.goal = goal.gameObject;
+                    return;
+                }
             }
         }
         Debug.LogWarning("Robot " + gameObject.name + " does not have goal.");

@@ -42,6 +42,7 @@ public class Obstacle : Circle, Entity
     {
         this.isDynamic = go.name.ToLower().Contains("user");
         Renderer renderer = go.GetComponent<Renderer>();
+        if (renderer == null) renderer = go.GetComponentInChildren<Renderer>();
         length = renderer.bounds.size.z;
         width = renderer.bounds.size.x;
         this.radius = Mathf.Max(width, length) / 2f;

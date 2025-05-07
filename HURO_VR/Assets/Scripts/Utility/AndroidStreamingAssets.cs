@@ -55,6 +55,7 @@ public class StreamingAssetsManager : MonoBehaviour
         // Now copy all the files
         foreach (string relativePath in filesToCopy)
         {
+            
             yield return StartCoroutine(CopyFileFromStreamingAssets(relativePath));
         }
 

@@ -4,6 +4,7 @@ using System.Collections;
 using Renci.SshNet;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading;
 using Debug = UnityEngine.Debug;
 
 public class GoogleCloudServer : MonoBehaviour
@@ -18,6 +19,7 @@ public class GoogleCloudServer : MonoBehaviour
 
     // Path to python script on VM.
     string remoteScriptPath = "/home/accou/Python_Scripts/Python/main.py"; 
+    public bool Connected = false;
 
     [Header("Logging")]
     [Tooltip("Enable detailed logging")]
@@ -30,7 +32,7 @@ public class GoogleCloudServer : MonoBehaviour
 
     private void Awake()
     {
-        privateKeyPath = Application.streamingAssetsPath + privateKeyPath;
+        privateKeyPath = Application.persistentDataPath + privateKeyPath;
     }
     // Callback for logging
     private void Log(string message)
@@ -61,6 +63,7 @@ public class GoogleCloudServer : MonoBehaviour
         client = new SshClient(connectionInfo);
         // Connect to the SSH server
         client.Connect();
+        Connected = true;
         Log("SSH connection established.");
     }
 
@@ -69,36 +72,66 @@ public class GoogleCloudServer : MonoBehaviour
         if (client != null)
         {
             client.Disconnect();
+            Connected = false;
         }
         client = null;
     }
-
-    public string ExecuteCommand(string param)
+    
+    
+    /// <summary>
+    /// Executes a remote Python script with the given parameter asynchronously to avoid blocking the main thread.
+    /// </summary>
+    /// <param name="param">The parameter to pass to the Python script.</param>
+    /// <returns>IEnumerator for coroutine execution.</returns>
+    public IEnumerator ExecuteCommandCoroutine(string param)
     {
         if (remoteScriptPath == null)
         {
             Debug.LogWarning("Must set Simulation ID before Executing Script.");
-            return "[]";
+            OnScriptExecutionComplete?.Invoke("[]");
+            yield break;
         }
-        string commandToExecute = $"python3 {remoteScriptPath} '{param}'";
-        using (var cmd = client.CreateCommand(commandToExecute))
-        {
-            cmd.Execute();
 
-            if (cmd.ExitStatus == 0)
+        string commandToExecute = $"python3 {remoteScriptPath} '{param}'";
+        string result = string.Empty;
+
+        // Execute the SSH command in a separate thread to avoid blocking the main thread.
+        bool isDone = false;
+        Thread executionThread = new Thread(() =>
+        {
+            try
             {
-                //Log($"Command executed successfully: {commandToExecute}");
-                string result = cmd.Result.Trim();
-                OnScriptExecutionComplete?.Invoke(result); 
-                return result;
+                using (var cmd = client.CreateCommand(commandToExecute))
+                {
+                    cmd.Execute();
+
+                    if (cmd.ExitStatus == 0)
+                    {
+                        result = cmd.Result.Trim();
+                    }
+                    else
+                    {
+                        Debug.LogError($"Command failed. Command:{commandToExecute.Substring(0, 20)} Error: {cmd.Error}");
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Debug.LogError($"Command failed. Command:{commandToExecute.Substring(0, 20)} Error: {cmd.Error}");
-                return string.Empty;
+                Debug.LogError($"Exception while executing command: {ex.Message}");
             }
-        }
+
+            isDone = true;
+        });
+
+        executionThread.Start();
+
+        // Wait until the thread completes
+        while (!isDone)
+            yield return null;
+
+        OnScriptExecutionComplete?.Invoke(result);
     }
+
 
     private IEnumerator ExecuteRemoteScriptCoroutine(string param)
     {

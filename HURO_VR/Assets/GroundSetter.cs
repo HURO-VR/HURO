@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class UserObstacle : MonoBehaviour
+public class GroundSetter : MonoBehaviour
 {
     
-    Transform cameraRig;
+    
     #region Serialized Variables
     // Add any [SerializeField] variables here if needed
     // Add Headers: [Header("Logging")]
@@ -16,20 +16,30 @@ public class UserObstacle : MonoBehaviour
     #endregion
 
     #region Private Variables
-    // Add private variables here
+
+    private float timer;
     #endregion
 
     #region Unity Methods
-    private void Awake()
+    private void Start()
     {
-        cameraRig = GetComponentInParent<OVRCameraRig>().transform;
+        // Initialization code
     }
-
+    
     private void Update()
     {
-        var input = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
-        Vector3 direction = -cameraRig.forward * input.y + -cameraRig.right * input.x;
-        cameraRig.Translate(direction * Time.deltaTime, Space.World);
+        if (OVRInput.Get(OVRInput.RawButton.X))
+        {
+            timer += Time.deltaTime;
+        }
+        else timer = 0;
+
+        if (timer > 3f)
+        {
+            timer = 0;
+            var anchor = GameObject.Find("LeftHandAnchor");
+            transform.position = new Vector3(transform.position.x, anchor.transform.position.y, transform.position.z);
+        }
     }
     #endregion
 

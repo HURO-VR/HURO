@@ -59,7 +59,6 @@ public class GoalEntity : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (robot == null) return;
-        Debug.Log(other.gameObject.name + " and " + robot.name);
         if (other.gameObject == this.robot)
         {
             var controller = this.robot.GetComponent<RobotEntity>();

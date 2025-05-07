@@ -13,6 +13,10 @@ namespace Entity_Scripts
         private bool isCountingDown = false;
         public List<GameObject> numbers;
         private event Action OnFinishCountDown;
+        [SerializeField] Material onMaterial;
+        [SerializeField] Material offMaterial;
+        Renderer[] renderers;
+        bool on = false;
         
         private void Awake()
         {
@@ -23,6 +27,21 @@ namespace Entity_Scripts
                 SimulationManager.Instance.StartAlgorithm();
                 gameObject.SetActive(false);
             };
+            renderers = GetComponentsInChildren<Renderer>();
+        }
+
+        private void Start()
+        {
+            Debug.Log(gameObject.name + " " + gameObject.transform.parent.name);
+
+        }
+
+        private void ToggleMaterial()
+        {
+            var m = on ? onMaterial : offMaterial;
+            foreach (var r in renderers)
+                for (int i = 0; i < r.sharedMaterials.Length; i++)
+                    r.sharedMaterials[i] = m;
         }
 
         private void Update()
@@ -30,12 +49,16 @@ namespace Entity_Scripts
             bool locationTrigger = IsInXZBox(transform, userLocation.transform.position);
             if ((locationTrigger && !isCountingDown) || Input.GetKeyDown(KeyCode.P))
             {
+                on = true;
+                ToggleMaterial();
                 Debug.Log("Start countdown");
                 StartCountDown();
             }
-            else if (!locationTrigger)
+            else if (!locationTrigger && isCountingDown)
             {
-                //StopCountdown();
+                on = false;
+                ToggleMaterial();
+                StopCountdown();
             }
             
             
@@ -60,7 +83,7 @@ namespace Entity_Scripts
         IEnumerator CountdownShrink(float shrinkDuration = 1f)
         {
             Camera cam = Camera.main;
-            yield return new WaitForSeconds(2f); // Delay countdown start.
+            yield return new WaitForSeconds(0.5f); // Delay countdown start.
             foreach (GameObject _obj in numbers)
             {
                 if (!isCountingDown) break;
@@ -77,7 +100,6 @@ namespace Entity_Scripts
 
                 while (elapsed < shrinkDuration && isCountingDown)
                 {
-                    Debug.Log("Countdwn scaling.");
                     // Make the object look at the camera
                     Vector3 lookDirection = cam.transform.position - obj.transform.position;
                     lookDirection.y = 0f; // Optional: keep it level
@@ -96,7 +118,7 @@ namespace Entity_Scripts
             if (isCountingDown) OnFinishCountDown?.Invoke();
         }
 
-
+        private const float BOX_SIZE = 0.4f;
         
         /// <summary>
         /// Checks if a transform's XZ position is within a 0.5 x 0.5 box around a target point.
@@ -107,7 +129,7 @@ namespace Entity_Scripts
         bool IsInXZBox(Transform t, Vector3 center)
         {
             Vector3 pos = t.position;
-            return Mathf.Abs(pos.x - center.x) <= 0.25f && Mathf.Abs(pos.z - center.z) <= 0.25f;
+            return Mathf.Abs(pos.x - center.x) <= BOX_SIZE && Mathf.Abs(pos.z - center.z) <= BOX_SIZE;
         }
 
     }

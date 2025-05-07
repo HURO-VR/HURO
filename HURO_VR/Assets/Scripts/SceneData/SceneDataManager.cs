@@ -48,7 +48,6 @@ public partial class SceneDataManager : MonoBehaviour
     {
         if (mruk) LabelMRObjects();
 
-        if (initalized) return;
         robots = InitRobotData();
         Debug.Log("Initalized Robots: " + robots.Length);
 

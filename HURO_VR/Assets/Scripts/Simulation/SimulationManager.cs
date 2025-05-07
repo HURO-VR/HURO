@@ -2,6 +2,8 @@
 using UnityEngine;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Linq;
 using TMPro;
 using System.Runtime.CompilerServices;
 using Meta.XR.MRUtilityKit;
@@ -41,6 +43,8 @@ public class SimulationManager : MonoBehaviour
     /// </summary>
     [Tooltip("Will end simulation after X seconds.")]
     [SerializeField] float simulationTimeout = 30f;
+    
+    [SerializeField] List<GameObject> levels = new List<GameObject>();
 
     #endregion
 
@@ -58,6 +62,7 @@ public class SimulationManager : MonoBehaviour
     private SessionManager sessionManager;
     private float timer = 0f;
     private float totalTime = 0f;
+    private int levelIndex = 0;
 
     #endregion
     
@@ -79,6 +84,7 @@ public class SimulationManager : MonoBehaviour
             if (!sceneData) sceneData = GetComponent<SceneDataManager>();
             audioLibrary = FindAnyObjectByType<AudioLibrary>();
             remoteScriptExecutor = GetComponent<GoogleCloudServer>();
+            remoteScriptExecutor.OnScriptExecutionComplete += OnScriptComplete;
             fileTransfer = FindAnyObjectByType<StreamingAssetsManager>();
             sessionManager = FindAnyObjectByType<SessionManager>();
         }
@@ -88,6 +94,11 @@ public class SimulationManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        //InitAlgorithm();
+    }
+
     /// <summary>
     /// Called once per frame to update simulation state, process algorithm steps, and handle input.
     /// </summary>
@@ -95,14 +106,16 @@ public class SimulationManager : MonoBehaviour
     {
         DetectKeyBoardActivation();
 
-        if (!algorithmRunning || (fileTransfer != null && !fileTransfer.IsCopyingComplete()))
+        if (fileTransfer != null && !fileTransfer.IsCopyingComplete())
             return;
-        else if (!initAlgorithm)
+        if (!initAlgorithm)
             InitAlgorithm();
+        if (!algorithmRunning)
+            return;
 
         IncrementTime();
         if (ShouldTerminate())
-            EndSimulation();
+            StartCoroutine(EndSimulation());
 
         if (ShouldStep())
         {
@@ -149,10 +162,11 @@ public class SimulationManager : MonoBehaviour
     /// </summary>
     public void InitAlgorithm()
     {
-        remoteScriptExecutor.OpenSSHConnection();
+        if (!remoteScriptExecutor.Connected) 
+            remoteScriptExecutor.OpenSSHConnection();
         if (!sceneData)
             sceneData = GetComponent<SceneDataManager>();
-
+        
         sceneData.InitSceneData();
         RunDataCollector.InitializeSimulation(sceneData.LoadOutput());
         audioLibrary.PlayAudio(AudioLibrary.AudioType.SmallBeep);
@@ -221,7 +235,7 @@ public class SimulationManager : MonoBehaviour
     /// Ends the simulation, uploads run data, and plays ending audio.
     /// </summary>
     /// <param name="stop">If set to true, ends the simulation.</param>
-    public void EndSimulation(bool stop = true)
+    public IEnumerator EndSimulation(bool stop = true)
     {
         if (algorithmRunning && stop)
         {
@@ -230,6 +244,14 @@ public class SimulationManager : MonoBehaviour
             //sessionManager?.UploadSimulationRunData(RunDataCollector.runMetadata);
             audioLibrary.PlayAudio(AudioLibrary.AudioType.EndSimulation);
             OnSimulationEnd?.Invoke();
+            levels[levelIndex].SetActive(false);
+            levelIndex++;
+            if (levelIndex < levels.Count)
+            {
+                levels[levelIndex].SetActive(true);
+                yield return null;
+                InitAlgorithm();
+            }
             restart = true;
         }
     }
@@ -291,8 +313,7 @@ public class SimulationManager : MonoBehaviour
     /// <param name="param">The parameter string to pass to the server command.</param>
     void RunAlgorithmOnServer(string param)
     {
-        remoteScriptExecutor.OnScriptExecutionComplete += OnScriptComplete;
-        remoteScriptExecutor.ExecuteCommand(param);
+        StartCoroutine(remoteScriptExecutor.ExecuteCommandCoroutine(param));
     }
 
     /// <summary>
@@ -398,7 +419,7 @@ public class SimulationManager : MonoBehaviour
         {
             DebugLogs(e.ToString());
             RunDataCollector.LogWarning(e.ToString());
-            EndSimulation();
+            StartCoroutine(EndSimulation());
             Debug.LogError(e.ToString());
             DebugLogs("Stopping Simulation");
         }
@@ -421,12 +442,12 @@ public class SimulationManager : MonoBehaviour
     /// </summary>
     void DetectKeyBoardActivation()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space) || OVRInput.GetDown(OVRInput.RawButton.A))
         {
             ToggleAlgorithm();
         }
 
-        if (Input.GetKeyUp(KeyCode.I))
+        if (Input.GetKeyUp(KeyCode.I) || OVRInput.GetDown(OVRInput.RawButton.B))
         {
             InitAlgorithm();
         }
