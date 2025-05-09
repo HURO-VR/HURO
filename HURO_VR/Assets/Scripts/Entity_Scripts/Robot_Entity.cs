@@ -106,9 +106,9 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     protected void Update()
     {
-        if (algorithmRunner.IsRunning() == false)
+        if (algorithmRunner.IsRunning() == false && !body.isKinematic)
             body.velocity = Vector3.zero;
-        else if (!goalReached) 
+        else if (!goalReached && !body.isKinematic) 
             body.velocity = velocity;
         // Slow down rate.
         velocity *= slowRate;
@@ -151,13 +151,13 @@ public class RobotEntity : MonoBehaviour
     /// <param name="z">Velocity component along the z-axis.</param>
     public void SetVelocity(float x, float z)
     {
-        if (!goalReached)
+        if (!goalReached && !body.isKinematic)
         {
             velocity = new Vector3(x, 0, z);
         }
         else
         {
-            Debug.Log(gameObject.name + " not responding to further input");
+            //Debug.Log(gameObject.name + " not responding to further input");
         }
     }
 
