@@ -29,6 +29,9 @@ public class ForkliftController : RobotEntity
     [SerializeField] List<Vector3> goalPositions;
     private int goalIndex = 0;
     private Rigidbody body;
+    GameObject emptyPallet;
+    private int emptyPalletIndex = 0;
+    private int palletIndex = -1;
     #endregion
 
     #region Unity Methods
@@ -46,8 +49,19 @@ public class ForkliftController : RobotEntity
             else if (PalletIsDown) LiftPallet();
             base.ResetGoal(RotateGoal());
         };
+        goalPositions.Add(lift.transform.position);
         this.ResetGoal(RotateGoal());
         body = gameObject.GetComponent<Rigidbody>();
+        for (int i = 0; i < lift.transform.childCount; i++)
+            if (lift.transform.GetChild(i).gameObject.activeSelf)
+            {
+                emptyPallet = lift.transform.GetChild(i).gameObject;
+                emptyPalletIndex = i;
+                break;
+            }
+
+        palletIndex = emptyPalletIndex + 1;
+        palletIndex %= lift.transform.childCount;
     }
 
     void RotateToVelocity()
@@ -81,7 +95,18 @@ public class ForkliftController : RobotEntity
     private void Update()
     {
         if (movePalletDown && lift.transform.position.y > palletDown)
+        {
             lift.transform.position += Vector3.down * 1 * Time.deltaTime;
+            if (body.velocity != Vector3.zero) 
+                body.velocity = Vector3.zero;
+            
+            body.isKinematic = true;
+            if (!(lift.transform.position.y > palletDown)) // Fully Lowered.
+            {
+                body.isKinematic = false;
+                EmptyPallet();
+            }
+        }
         else if (movePalletUp && lift.transform.position.y < palletDown + upAmount)
             lift.transform.position -= Vector3.down * 1 * Time.deltaTime;
         RotateToVelocity();
@@ -90,16 +115,36 @@ public class ForkliftController : RobotEntity
     #endregion
 
     #region Public Methods
-
     public void LiftPallet()
     {
         movePalletUp = true;
         Debug.Log($"LiftPallet {palletDown + upAmount}");
+        FillPallet();
+    }
+
+    private void FillPallet()
+    {
+        emptyPallet.SetActive(false);
+        lift.transform.GetChild(palletIndex).gameObject.SetActive(true);
+        palletIndex++;
+        palletIndex %= lift.transform.childCount;
+        if (palletIndex == emptyPalletIndex) palletIndex++;
+        palletIndex %= lift.transform.childCount;
+        return;
     }
 
     public void LowerPallet()
     {
         movePalletUp = false;
+
+    }
+
+    void EmptyPallet()
+    {
+        foreach (Transform child in lift.transform)
+            if (child.gameObject.activeSelf)
+                child.gameObject.SetActive(false);
+        emptyPallet.SetActive(true);
     }
     #endregion
 

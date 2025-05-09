@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e22f47a8ce11d494387b861c04a21c34, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 883779456748886080, guid: 75677f3c404d6c8439c568a366ac3edc, type: 3}
     - target: {fileID: 919132149155446097, guid: e22f47a8ce11d494387b861c04a21c34, type: 3}
       propertyPath: m_Name
       value: Pallet
