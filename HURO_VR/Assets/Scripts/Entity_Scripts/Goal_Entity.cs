@@ -4,8 +4,8 @@ using UnityEngine;
 /// <summary>
 /// Represents the goal entity that robots can interact with during the simulation.
 /// </summary>
-/// 
-[RequireComponent(typeof(EntityLocator))]
+///
+[RequireComponent(typeof(SphereCollider))]
 public class GoalEntity : MonoBehaviour
 {
     #region Private Variables
@@ -13,7 +13,7 @@ public class GoalEntity : MonoBehaviour
     /// <summary>
     /// The robot GameObject associated with this goal.
     /// </summary>
-    private GameObject robot;
+    private RobotEntity robot;
 
     /// <summary>
     /// The initial rotation to apply to the goal.
@@ -32,6 +32,9 @@ public class GoalEntity : MonoBehaviour
     void Awake()
     {
         gameObject.tag = "Goal";
+        var collider = gameObject.GetComponent<SphereCollider>();
+        collider.isTrigger = true;
+        collider.radius = Robot.DEFAULT_GOAL_RADIUS;
     }
 
     /// <summary>
@@ -42,13 +45,13 @@ public class GoalEntity : MonoBehaviour
     {
         gameObject.transform.eulerAngles = initialRotation;
     }
-
+    
+    protected bool inGoal = false;
     /// <summary>
     /// Called once per frame.
     /// </summary>
     void Update()
     {
-        // No update functionality required.
     }
 
     /// <summary>
@@ -59,10 +62,9 @@ public class GoalEntity : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (robot == null) return;
-        if (other.gameObject == this.robot)
+        if (other.gameObject == this.robot.gameObject)
         {
-            var controller = this.robot.GetComponent<RobotEntity>();
-            controller.GoalReached();
+            robot.GoalReached();
         }
     }
 
@@ -76,7 +78,7 @@ public class GoalEntity : MonoBehaviour
     /// <param name="robot">The robot GameObject to associate.</param>
     public void SetRobot(GameObject robot)
     {
-        this.robot = robot;
+        this.robot = robot.GetComponent<RobotEntity>();
     }
 
     /// <summary>

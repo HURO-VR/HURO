@@ -10,7 +10,7 @@ public class Robot : Entity
     public float radius;
     public string name;
 
-    float DEFAULT_GOAL_RADIUS = 0.05f;
+    public static float DEFAULT_GOAL_RADIUS = 0.05f;
 
     /// <summary>
     /// Initializes a Robot instance using data from the given GameObject.
@@ -32,8 +32,7 @@ public class Robot : Entity
         RobotEntity robotController = go.GetComponent<RobotEntity>();
         SphereCollider sphereCollider = go.GetComponent<SphereCollider>();
 
-        Transform goal_transform = robotController.GetGoal().transform;
-        Collider goalCollider = goal_transform.GetComponent<Collider>();
+        Vector3 goalPos = robotController.GetGoal();
 
         Renderer renderer = robot_transform.GetComponent<Renderer>();
         this.name = go.name;
@@ -46,9 +45,9 @@ public class Robot : Entity
         this.curr_velocity.y = robot_velocity.y;
         this.curr_velocity.z = robot_velocity.z;
 
-        this.goal.x = goal_transform.position.x;
-        this.goal.y = goal_transform.position.y;
-        this.goal.z = goal_transform.position.z;
+        this.goal.x = goalPos.x;
+        this.goal.y = goalPos.y;
+        this.goal.z = goalPos.z;
 
         this.max_velocity = robotController.maxVelocity;
         this.radius = sphereCollider.radius * robot_transform.localScale.x;

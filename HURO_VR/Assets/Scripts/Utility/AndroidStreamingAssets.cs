@@ -60,7 +60,6 @@ public class StreamingAssetsManager : MonoBehaviour
         }
 
         isCopyingComplete = true;
-        if (skippedFiles < copiedFiles) library?.PlayAudio(AudioLibrary.AudioType.FileInitFinished);
         Debug.Log($"HURO: Completed copying {copiedFiles}/{totalFiles} files to {Application.persistentDataPath}");
     }
 

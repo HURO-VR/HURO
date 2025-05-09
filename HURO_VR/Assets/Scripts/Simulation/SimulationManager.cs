@@ -171,6 +171,7 @@ public class SimulationManager : MonoBehaviour
         RunDataCollector.InitializeSimulation(sceneData.LoadOutput());
         audioLibrary.PlayAudio(AudioLibrary.AudioType.SmallBeep);
         initAlgorithm = true;
+        algorithmRunning = true;
     }
 
     /// <summary>
@@ -184,7 +185,7 @@ public class SimulationManager : MonoBehaviour
         if (!initAlgorithm) InitAlgorithm();
         if (audioLibrary && !algorithmRunning)
         {
-            audioLibrary.PlayAudio(AudioLibrary.AudioType.StartSimulation);
+
             OnSimulationStart?.Invoke();
 
         }
@@ -356,6 +357,7 @@ public class SimulationManager : MonoBehaviour
         bool timeout = totalTime > simulationTimeout;
         bool reachedGoals = RunDataCollector.CheckAllRobotsReachedGoal();
         bool deadlock = true;
+        return false;
         RobotEntity[] robots = FindObjectsByType<RobotEntity>(FindObjectsSortMode.InstanceID);
         foreach (var robot in robots)
         {

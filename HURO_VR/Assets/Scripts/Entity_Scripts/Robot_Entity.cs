@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Entity_Scripts;
@@ -7,7 +8,6 @@ using UnityEngine;
 /// Represents a robot entity that navigates towards a goal within the simulation.
 /// </summary>
 [RequireComponent(typeof(SphereCollider))]
-[RequireComponent(typeof(EntityLocator))]
 public class RobotEntity : MonoBehaviour
 {
     #region Private Variables
@@ -18,7 +18,7 @@ public class RobotEntity : MonoBehaviour
     [SerializeField]
     private GameObject _goal;
     private GameObject goal;
-
+    
     /// <summary>
     /// Indicates whether the robot has reached its goal.
     /// </summary>
@@ -54,12 +54,14 @@ public class RobotEntity : MonoBehaviour
     /// Gets a value indicating whether the robot is stuck (in deadlock).
     /// </summary>
     public bool stuck { get; private set; }
+    
+    public event Action OnGoalReached;
 
     /// <summary>
     /// Initial rotation to be applied to the robot.
     /// </summary>
     [SerializeField]
-    Vector3 initialRotation;
+    protected Vector3 initialRotation;
 
     /// <summary>
     /// Time limit in seconds to determine deadlock.
@@ -75,7 +77,7 @@ public class RobotEntity : MonoBehaviour
     /// Called when the script instance is being loaded.
     /// Initializes required components and sets the GameObject tag.
     /// </summary>
-    private void Awake()
+    protected void Awake()
     {
         stuck = false;
         algorithmRunner = FindAnyObjectByType<SimulationManager>();
@@ -87,7 +89,7 @@ public class RobotEntity : MonoBehaviour
     /// Called on the frame when the script is enabled.
     /// Initializes the goal if needed and sets initial properties.
     /// </summary>
-    void Start()
+    protected void Start()
     {
         InitGoal();
         if (maxVelocity == 0)
@@ -102,13 +104,12 @@ public class RobotEntity : MonoBehaviour
     /// Called once per frame.
     /// Monitors deadlock conditions and updates the robot state.
     /// </summary>
-    void Update()
+    protected void Update()
     {
         if (algorithmRunner.IsRunning() == false)
             body.velocity = Vector3.zero;
         else if (!goalReached) 
             body.velocity = velocity;
-        
         // Slow down rate.
         velocity *= slowRate;
         if (IsStuck())
@@ -126,6 +127,8 @@ public class RobotEntity : MonoBehaviour
             timer = 0;
         }
     }
+
+
 
     /// <summary>
     /// Called when a collision occurs. Adds collision data unless colliding with the floor.
@@ -158,6 +161,15 @@ public class RobotEntity : MonoBehaviour
         }
     }
 
+    public void ResetGoal(GoalEntity goal)
+    {
+        this.goal = goal.gameObject;
+        this._goal = goal.gameObject;
+        goal.SetRobot(gameObject);
+        this.goalReached = false;
+        body.isKinematic = false;
+    }
+
     /// <summary>
     /// Marks the goal as reached, stops the robot, and disables further movement.
     /// </summary>
@@ -168,20 +180,22 @@ public class RobotEntity : MonoBehaviour
         velocity = Vector3.zero;
         body.velocity = Vector3.zero;
         body.isKinematic = true;
+        OnGoalReached?.Invoke();
     }
+    
 
     /// <summary>
     /// Retrieves the goal GameObject assigned to the robot.
     /// If no goal is set, initializes one.
     /// </summary>
     /// <returns>The goal GameObject.</returns>
-    public GameObject GetGoal()
+    public Vector3 GetGoal()
     {
         if (goal == null)
         {
             InitGoal();
         }
-        return goal;
+        return goal.transform.position;
     }
 
     /// <summary>

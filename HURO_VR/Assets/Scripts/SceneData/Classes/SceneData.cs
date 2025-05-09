@@ -1,3 +1,4 @@
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -28,10 +29,22 @@ public partial class SceneDataManager : MonoBehaviour
     public SceneDataOutput LoadOutput()
     {
         output.robot_radius = robot_radius;
+        
+        UpdateRobotGoals();
         output.robots = robots;
         output.boundary = boundary;
         output.obstacles = Obstacle.UnpackAbstractions(obstacles);
         return output;
+    }
+
+    private void UpdateRobotGoals()
+    {
+        var robotControllers = GameObject.FindObjectsOfType<RobotEntity>();
+        for (int i = 0; i < robots.Length; i++)
+        {
+            var controller = robotControllers.First(r => r.name == robots[i].name);
+            if (controller) robots[i].goal = controller.GetGoal();
+        }
     }
 
     /// <summary>

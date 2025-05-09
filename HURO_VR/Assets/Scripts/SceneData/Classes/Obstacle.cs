@@ -108,7 +108,7 @@ public class Obstacle : Circle, Entity
                 list.Add(obstacle.ToCircle());
             }
         }
-        Debug.Log("Unpacked " + obstacles.Length + " obstacles into " + list.Count + " circles.");
+        //Debug.Log("Unpacked " + obstacles.Length + " obstacles into " + list.Count + " circles.");
 
         return list.ToArray();
     }

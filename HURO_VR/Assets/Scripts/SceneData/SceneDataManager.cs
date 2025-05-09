@@ -52,7 +52,7 @@ public partial class SceneDataManager : MonoBehaviour
         Debug.Log("Initalized Robots: " + robots.Length);
 
         Robot[] goals = robots.Where((robot) => robot.goal.x != 0).ToArray();
-        Debug.Log("Initalized Goals: " + goals.Length + " position: " + goals[0].goal);
+        Debug.Log("Initalized Goals: " + goals.Length );
 
         obstacles = InitObstacles();
         Debug.Log("Initalized Obstacles: " + obstacles.Length);

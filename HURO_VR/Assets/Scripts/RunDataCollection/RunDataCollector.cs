@@ -213,7 +213,7 @@ public static class RunDataCollector
             name = robot_go.name,
             robotStart = robot_go.transform.position,
             robotPath = new List<XYZ>(),
-            goalPosition = robotController.GetGoal().transform.position,
+            goalPosition = robotController.GetGoal(),
             collisions = new List<XYZ>(),
             goalReached = false
         };

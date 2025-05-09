@@ -22,14 +22,28 @@ public class UserObstacle : MonoBehaviour
     #region Unity Methods
     private void Awake()
     {
-        cameraRig = GetComponentInParent<OVRCameraRig>().transform;
+        cameraRig = FindAnyObjectByType<OVRCameraRig>().transform;
     }
 
     private void Update()
     {
-        var input = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
-        Vector3 direction = -cameraRig.forward * input.y + -cameraRig.right * input.x;
-        cameraRig.Translate(direction * Time.deltaTime, Space.World);
+        Vector2 input = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+
+        // Early out if there's no input
+        if (input.sqrMagnitude < 0.01f)
+            return;
+
+        // Calculate direction relative to camera's forward, ignoring vertical
+        Vector3 forward = cameraRig.transform.forward;
+        forward.y = 0;
+        forward.Normalize();
+
+        Vector3 right = cameraRig.transform.right;
+        right.y = 0;
+        right.Normalize();
+
+        Vector3 moveDirection = forward * input.y + right * input.x;
+        cameraRig.position += moveDirection * 1f * Time.deltaTime;
     }
     #endregion
 
