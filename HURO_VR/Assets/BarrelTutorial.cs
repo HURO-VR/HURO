@@ -19,7 +19,6 @@ public class BarrelTutorial : MonoBehaviour
 
     #region Private Variables
     AudioLibrary audioLibrary;
-    private GameObject spawn;
     
     #endregion
 
@@ -28,10 +27,6 @@ public class BarrelTutorial : MonoBehaviour
     {
         collider = GetComponent<BoxCollider>();
         audioLibrary = GameObject.Find("AudioLibrary").GetComponent<AudioLibrary>();
-        var lifts = FindObjectsByType<ForkliftController>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
-        foreach (var lift in lifts)
-            if (lift.gameObject.activeSelf == false)
-                spawn = lift.gameObject;
     }
 
     private bool completed;
@@ -42,7 +37,8 @@ public class BarrelTutorial : MonoBehaviour
         {
             if (audioLibrary)
                 audioLibrary.PlayAudio(AudioLibrary.AudioType.Tutorial2);
-            spawn.SetActive(true);
+            
+            ForkliftController.ActivateLift();
             var mark = Instantiate(markerController.gameObject);
             mark.transform.position = new Vector3(5.32000017f, 0.560000002f, -0.660000026f);
             var control = mark.GetComponent<UserMarkerController>();
@@ -54,6 +50,7 @@ public class BarrelTutorial : MonoBehaviour
                     var mark = Instantiate(markerController.gameObject);
                     mark.transform.position = new Vector3(7.30000019f,0.560000002f,-3.25f);
                     var control = mark.GetComponent<UserMarkerController>();
+                    ForkliftController.ActivateLift();
                 }
             };
             completed = true;

@@ -70,6 +70,7 @@ public class ForkliftController : RobotEntity
         palletIndex = emptyPalletIndex + 1;
         palletIndex %= lift.transform.childCount;
         beaconController = gameObject.GetComponentInChildren<BeaconController>();
+        _forkliftControllers = FindObjectsByType<ForkliftController>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
     }
     
     
@@ -117,6 +118,17 @@ public class ForkliftController : RobotEntity
     {
         movePalletUp = true;
         FillPallet();
+    }
+
+    private static ForkliftController[] _forkliftControllers;
+
+    public static void ActivateLift()
+    {
+        GameObject spawn = null;
+        foreach (var lift in _forkliftControllers)
+            if (lift.gameObject.activeSelf == false)
+                spawn = lift.gameObject;
+        if (spawn) spawn.SetActive(true);
     }
 
     private void FillPallet()
