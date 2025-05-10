@@ -12,6 +12,7 @@ public class AudioLibrary : MonoBehaviour
         Tutorial3,
         Tutorial4,
         Tutorial5,
+        BackgroundNoise
     }
 
     //public static AudioLibrary Instance;

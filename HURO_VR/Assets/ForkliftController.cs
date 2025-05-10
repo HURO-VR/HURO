@@ -35,6 +35,7 @@ public class ForkliftController : RobotEntity
     GameObject emptyPallet;
     private int emptyPalletIndex = 0;
     private int palletIndex = -1;
+    private Vector3 originalRotation;
     #endregion
 
     #region Unity Methods
@@ -66,7 +67,7 @@ public class ForkliftController : RobotEntity
                 emptyPalletIndex = i;
                 break;
             }
-
+        originalRotation = body.transform.rotation.eulerAngles;
         palletIndex = emptyPalletIndex + 1;
         palletIndex %= lift.transform.childCount;
         beaconController = gameObject.GetComponentInChildren<BeaconController>();
@@ -108,7 +109,10 @@ public class ForkliftController : RobotEntity
         ManagePalletMovement();
         RotateToVelocity();
         ManageBeacons();
-
+        
+        if (transform.eulerAngles.y != originalRotation.y)
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, originalRotation.y, transform.eulerAngles.z);
+        
         base.Update();
     }
     #endregion

@@ -17428,42 +17428,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9b6b8bcefe4319a48978fadcad0f2ea2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1258438081}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9b6b8bcefe4319a48978fadcad0f2ea2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1258438080}
   m_SourcePrefab: {fileID: 100100000, guid: 9b6b8bcefe4319a48978fadcad0f2ea2, type: 3}
 --- !u!4 &1258438077 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9b6b8bcefe4319a48978fadcad0f2ea2, type: 3}
   m_PrefabInstance: {fileID: 1258438076}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &1258438080
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 712618318}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &1258438081
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28247,12 +28217,20 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
+      propertyPath: audioOnStart.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
+      propertyPath: audioOnStart.Array.data[0]
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[1].clip
       value: 
-      objectReference: {fileID: 8300000, guid: e3238b7e059258c4c963006f9472b3b6, type: 3}
+      objectReference: {fileID: 8300000, guid: 44be3b39ce44ad642b86167aedae800c, type: 3}
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[1].type
       value: 0
@@ -28280,6 +28258,18 @@ PrefabInstance:
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[4].type
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
+      propertyPath: audioClips.Array.data[5].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 034f0ea7b73319b41b31bb6f74a2fa2f, type: 3}
+    - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
+      propertyPath: audioClips.Array.data[5].type
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
+      propertyPath: audioClips.Array.data[5].volume
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 71007824391301750, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: m_Name
