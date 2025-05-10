@@ -27,9 +27,11 @@ public class ForkliftController : RobotEntity
     private float palletUpLimit => palletDownLimit + upAmount;
     private float upAmount = 0.94f;
     private GameObject currGoal;
-    [SerializeField] List<Vector3> goalPositions;
+    List<Vector3> goalPositions;
+    [SerializeField] List<Transform> entryPoints;
     private int goalIndex = 0;
     private Rigidbody body;
+    private BeaconController beaconController;
     GameObject emptyPallet;
     private int emptyPalletIndex = 0;
     private int palletIndex = -1;
@@ -50,8 +52,12 @@ public class ForkliftController : RobotEntity
             else if (PalletIsDown) LiftPallet();
             base.ResetGoal(RotateGoal());
         };
-        goalPositions.Add(lift.transform.position);
+        goalPositions = new List<Vector3>();
+        foreach (Transform child in entryPoints)
+            goalPositions.Add(child.position);
+        base.body.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
         this.ResetGoal(RotateGoal());
+
         body = gameObject.GetComponent<Rigidbody>();
         for (int i = 0; i < lift.transform.childCount; i++)
             if (lift.transform.GetChild(i).gameObject.activeSelf)
@@ -63,7 +69,10 @@ public class ForkliftController : RobotEntity
 
         palletIndex = emptyPalletIndex + 1;
         palletIndex %= lift.transform.childCount;
+        beaconController = gameObject.GetComponentInChildren<BeaconController>();
     }
+    
+    
 
     void RotateToVelocity()
     {
@@ -97,6 +106,8 @@ public class ForkliftController : RobotEntity
     {
         ManagePalletMovement();
         RotateToVelocity();
+        ManageBeacons();
+
         base.Update();
     }
     #endregion
@@ -119,6 +130,11 @@ public class ForkliftController : RobotEntity
         return;
     }
 
+    private void LightBeacons()
+    {
+        
+    }
+
     public void LowerPallet()
     {
         movePalletUp = false;
@@ -135,6 +151,15 @@ public class ForkliftController : RobotEntity
 
     #region Private Methods
 
+    void ManageBeacons()
+    {
+        if (beaconController == null) return;
+        if (base.IsRobotNearby() && beaconController.IsFlashing == false)
+            beaconController.FlashBeacons();
+        else if (beaconController.IsFlashing == true)
+            beaconController.DisableBeacons();
+
+    }
     void ManagePalletMovement()
     {
         if (movePalletDown && lift.transform.position.y > palletDownLimit)

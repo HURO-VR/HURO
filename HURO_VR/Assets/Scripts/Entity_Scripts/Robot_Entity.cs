@@ -8,6 +8,7 @@ using UnityEngine;
 /// Represents a robot entity that navigates towards a goal within the simulation.
 /// </summary>
 [RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(Rigidbody))]
 public class RobotEntity : MonoBehaviour
 {
     #region Private Variables
@@ -27,7 +28,9 @@ public class RobotEntity : MonoBehaviour
     /// <summary>
     /// The Rigidbody component of the robot.
     /// </summary>
-    private Rigidbody body;
+    protected Rigidbody body;
+
+    private SphereCollider collider;
 
     /// <summary>
     /// Reference to the simulation manager.
@@ -82,6 +85,7 @@ public class RobotEntity : MonoBehaviour
         stuck = false;
         algorithmRunner = FindAnyObjectByType<SimulationManager>();
         body = GetComponent<Rigidbody>();
+        collider = GetComponent<SphereCollider>();
         gameObject.tag = "Robot";
     }
 
@@ -151,7 +155,7 @@ public class RobotEntity : MonoBehaviour
     /// <param name="z">Velocity component along the z-axis.</param>
     public void SetVelocity(float x, float z)
     {
-        if (!goalReached && !body.isKinematic)
+        if (body && !goalReached && !body.isKinematic)
         {
             velocity = new Vector3(x, 0, z);
         }
@@ -175,7 +179,7 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     public void GoalReached()
     {
-        Debug.LogWarning(gameObject.name + " reached goal.");
+        //Debug.LogWarning(gameObject.name + " reached goal.");
         goalReached = true;
         velocity = Vector3.zero;
         body.velocity = Vector3.zero;
@@ -194,6 +198,10 @@ public class RobotEntity : MonoBehaviour
         if (goal == null)
         {
             InitGoal();
+        }
+        if (goal == null)
+        {
+            return transform.position;
         }
         return goal.transform.position;
     }
@@ -243,9 +251,38 @@ public class RobotEntity : MonoBehaviour
                     return;
                 }
             }
-            Debug.LogWarning("Robot " + gameObject.name + " does not have goal.");
+            if (gameObject.activeSelf) 
+                Debug.LogWarning("Robot " + gameObject.name + " does not have goal.");
 
         }
+    }
+    
+    public float robotNearbyDistance;
+    /// <summary>
+    /// Checks if any GameObject with tag "Robot" is within robotNearbyDistance meters of this object's SphereCollider.
+    /// </summary>
+    /// <returns>True if at least one Robot is nearby; otherwise, false.</returns>
+    public bool IsRobotNearby()
+    {
+        if (collider == null)
+        {
+            Debug.LogWarning("SphereCollider not found.");
+            return false;
+        }
+
+        Vector3 center = collider.transform.TransformPoint(collider.center);
+
+        Collider[] hits = Physics.OverlapSphere(center, robotNearbyDistance);
+        foreach (Collider hit in hits)
+        {
+            if (hit.gameObject != this.gameObject && hit.CompareTag("Robot"))
+            {
+                //Debug.Log("Nearby: " + hit.gameObject.name);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>

@@ -130,8 +130,13 @@ public partial class SceneDataManager : MonoBehaviour
     /// <returns>An array of Robot instances.</returns>
     private Robot[] InitRobotData()
     {
-        GameObject[] robot_gos = GameObject.FindGameObjectsWithTag("Robot");
-        Robot[] robots = new Robot[robot_gos.Length];
+        List<GameObject> robot_gos = new List<GameObject>();
+        var all = GameObject.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+        foreach (Transform go in all)
+            if (go.CompareTag("Robot"))
+                robot_gos.Add(go.gameObject);
+                
+        Robot[] robots = new Robot[robot_gos.Count];
         int i = 0;
         foreach (GameObject robot_go in robot_gos)
         {

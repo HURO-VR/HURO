@@ -7,12 +7,11 @@ public class AudioLibrary : MonoBehaviour
     public enum AudioType
     {
         // User Feedback
-        StartSimulation,
-        EndSimulation,
-        FileInitFinished,
-        FileInitStarted,
-        SmallBeep,
-        None
+        Tutorial1,
+        Tutorial2,
+        Tutorial3,
+        Tutorial4,
+        Tutorial5,
     }
 
     //public static AudioLibrary Instance;

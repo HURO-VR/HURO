@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - Robot
   - Goal
+  - Beacon
   layers:
   - Default
   - TransparentFX

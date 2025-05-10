@@ -92,6 +92,10 @@ public class SimulationManager : MonoBehaviour
         {
             DebugLogs(e.ToString());
         }
+        UserMarkerController.OnMarkerHit += (type) =>
+        {
+            if (type == UserMarkerController.MarkerType.Tutorial1) algorithmRunning = true;
+        };
     }
 
     private void Start()
@@ -169,9 +173,7 @@ public class SimulationManager : MonoBehaviour
         
         sceneData.InitSceneData();
         RunDataCollector.InitializeSimulation(sceneData.LoadOutput());
-        audioLibrary.PlayAudio(AudioLibrary.AudioType.SmallBeep);
         initAlgorithm = true;
-        algorithmRunning = true;
     }
 
     /// <summary>
@@ -243,7 +245,6 @@ public class SimulationManager : MonoBehaviour
             RunDataCollector.EndSimulation();
             PauseAlgorithm();
             //sessionManager?.UploadSimulationRunData(RunDataCollector.runMetadata);
-            audioLibrary.PlayAudio(AudioLibrary.AudioType.EndSimulation);
             OnSimulationEnd?.Invoke();
             levels[levelIndex].SetActive(false);
             levelIndex++;
@@ -324,27 +325,18 @@ public class SimulationManager : MonoBehaviour
     void SetNewVelocities(float[][] newVelocities)
     {
         int stopSim = 0;
-        GameObject[] robots_go = GameObject.FindGameObjectsWithTag("Robot");
+        RobotEntity[] robots_go = GameObject.FindObjectsByType<RobotEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
         foreach (var go in robots_go)
         {
             int i = 0;
             foreach (var robot in sceneData.robots)
             {
-                if (newVelocities[i][0] + newVelocities[i][1] == 0)
-                {
-                    stopSim++;
-                    continue;
-                }
                 if (go.name == robot.name)
                 {
                     go.GetComponent<RobotEntity>().SetVelocity(newVelocities[i][0], newVelocities[i][1]);
                 }
                 i++;
             }
-        }
-        if (stopSim == robots_go.Length)
-        {
-            Debug.LogWarning("Robots stopped");
         }
     }
 

@@ -40,7 +40,8 @@ public class Obstacle : Circle, Entity
     /// <param name="go">The GameObject to associate with this obstacle.</param>
     public Obstacle(GameObject go) : base(new XYZ(go.transform.position.x, go.transform.position.y, go.transform.position.z), 0f)
     {
-        this.isDynamic = go.name.ToLower().Contains("user");
+        this.isDynamic = true;
+        
         Renderer renderer = go.GetComponent<Renderer>();
         if (renderer == null) renderer = go.GetComponentInChildren<Renderer>();
         length = renderer.bounds.size.z;

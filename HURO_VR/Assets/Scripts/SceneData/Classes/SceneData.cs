@@ -39,7 +39,7 @@ public partial class SceneDataManager : MonoBehaviour
 
     private void UpdateRobotGoals()
     {
-        var robotControllers = GameObject.FindObjectsOfType<RobotEntity>();
+        var robotControllers = GameObject.FindObjectsByType<RobotEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
         for (int i = 0; i < robots.Length; i++)
         {
             var controller = robotControllers.First(r => r.name == robots[i].name);
