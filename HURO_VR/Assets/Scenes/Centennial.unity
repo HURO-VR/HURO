@@ -12079,7 +12079,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   markerController: {fileID: -4470532959351810160, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
-  robotNearbyDistance: 0.65
+  robotNearbyDistance: 0.8
 --- !u!1 &886108617
 GameObject:
   m_ObjectHideFlags: 0
@@ -14175,7 +14175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4981586856857611053, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: m_Radius
-      value: 0.05
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 6815046833159594192, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18585,7 +18585,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4981586856857611053, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: m_Radius
-      value: 0.05
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 6815046833159594192, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -28252,7 +28252,7 @@ PrefabInstance:
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[1].clip
       value: 
-      objectReference: {fileID: 8300000, guid: 85f624fb2a8c4424eb66b4ac1ccce9db, type: 3}
+      objectReference: {fileID: 8300000, guid: e3238b7e059258c4c963006f9472b3b6, type: 3}
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[1].type
       value: 0
@@ -28268,7 +28268,7 @@ PrefabInstance:
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[3].clip
       value: 
-      objectReference: {fileID: 8300000, guid: 7d4bbac778a23f9429a941f64aeea8b7, type: 3}
+      objectReference: {fileID: 8300000, guid: e1b45881efc0acf49b9c616b48675687, type: 3}
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[3].type
       value: 2
@@ -28425,11 +28425,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3081186733542716509, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: trailTime
-      value: 15
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3081186733542716509, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: trailWidth
-      value: 0.06
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3081186733542716509, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: trailColor.b
@@ -28493,7 +28493,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4981586856857611053, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: m_Radius
-      value: 0.05
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 6815046833159594192, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: m_LocalPosition.x
