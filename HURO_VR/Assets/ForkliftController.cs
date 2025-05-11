@@ -83,7 +83,6 @@ public class ForkliftController : RobotEntity
         {
             Quaternion targetRotation = Quaternion.LookRotation(horizontalVelocity);
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRotation.eulerAngles.y + base.initialRotation.y, transform.eulerAngles.z);
-            Debug.Log(targetRotation.eulerAngles.y + base.initialRotation.y);
         }
     }
 
