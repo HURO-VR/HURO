@@ -185,15 +185,11 @@ public class SimulationManager : MonoBehaviour
         if (!start)
             return; // This will be false when being called from the menu.
         if (!initAlgorithm) InitAlgorithm();
-        if (audioLibrary && !algorithmRunning)
+        if (!algorithmRunning)
         {
-
             OnSimulationStart?.Invoke();
-
         }
         algorithmRunning = true;
-        if (restart)
-            RandomizeObjectLocations();
         Debug.Log("HURO: Starting simulation");
     }
 

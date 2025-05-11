@@ -14,6 +14,8 @@ public class UserMarkerController : MonoBehaviour
         Tutorial3,
         Tutorial4,
         Tutorial5,
+        StartSimulation,
+        None
     }
     
     
