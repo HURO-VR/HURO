@@ -25,9 +25,10 @@ public class ClibboardController : MonoBehaviour
     public List<GameObject> machines;
     private Rigidbody velocityMachine;
     private Vector3 originalPosition;
-    float velocity = 0.07f;
+    public static float velocity = 0.07f;
+    public static int numMachines = 1;
     private GameObject bufferHalo;
-    float buffer;
+    public static float bufferScale = 1;
     #endregion
 
     #region Unity Methods
@@ -93,6 +94,7 @@ public class ClibboardController : MonoBehaviour
         if (i < machines.Count)
         {
             machines[i].SetActive(true);
+            numMachines++;
         }
     }
 
@@ -101,6 +103,7 @@ public class ClibboardController : MonoBehaviour
         if (i + 1 > 0)
         {
             machines[i + 1].SetActive(false);
+            numMachines--;
         }
     }
 
@@ -125,11 +128,13 @@ public class ClibboardController : MonoBehaviour
     private void ScaleBuffer(int i)
     {
         bufferHalo.transform.localScale *= 1.2f;
+        bufferScale *= 1.2f;
     }
 
     private void ShrinkBuffer(int i)
     {
         bufferHalo.transform.localScale /= 1.2f;
+        bufferScale /= 1.2f;
     }
     #endregion
 }

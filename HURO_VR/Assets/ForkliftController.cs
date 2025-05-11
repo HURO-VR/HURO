@@ -56,7 +56,7 @@ public class ForkliftController : RobotEntity
         goalPositions = new List<Vector3>();
         foreach (Transform child in entryPoints)
             goalPositions.Add(child.position);
-        base.body.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+        base.body.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezePositionY;
         this.ResetGoal(RotateGoal());
 
         body = gameObject.GetComponent<Rigidbody>();
@@ -83,6 +83,7 @@ public class ForkliftController : RobotEntity
         {
             Quaternion targetRotation = Quaternion.LookRotation(horizontalVelocity);
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRotation.eulerAngles.y + base.initialRotation.y, transform.eulerAngles.z);
+            Debug.Log(targetRotation.eulerAngles.y + base.initialRotation.y);
         }
     }
 
@@ -110,8 +111,8 @@ public class ForkliftController : RobotEntity
         RotateToVelocity();
         ManageBeacons();
         
-        if (transform.eulerAngles.y != originalRotation.y)
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, originalRotation.y, transform.eulerAngles.z);
+        if (transform.eulerAngles.x != originalRotation.x || transform.eulerAngles.z != originalRotation.z)
+            transform.eulerAngles = new Vector3(originalRotation.x, transform.eulerAngles.y, originalRotation.z);
         
         base.Update();
     }
