@@ -284,6 +284,28 @@ public class RobotEntity : MonoBehaviour
 
         return false;
     }
+    
+    public bool IsObstacleNearby()
+    {
+        if (collider == null)
+        {
+            Debug.LogWarning("SphereCollider not found.");
+            return false;
+        }
+
+        Vector3 center = collider.transform.TransformPoint(collider.center);
+
+        Collider[] hits = Physics.OverlapSphere(center, robotNearbyDistance);
+        foreach (Collider hit in hits)
+        {
+            if (hit.gameObject != this.gameObject && hit.CompareTag("Obstacle"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// Determines whether the robot is stuck (i.e., moving below a minimal velocity threshold)

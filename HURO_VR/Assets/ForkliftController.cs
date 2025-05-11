@@ -207,7 +207,7 @@ public class ForkliftController : RobotEntity
     void ManageBeacons()
     {
         if (beaconController == null) return;
-        if (base.IsRobotNearby() && beaconController.IsFlashing == false)
+        if (beaconController.IsFlashing == false && (base.IsRobotNearby() || base.IsObstacleNearby()))
             beaconController.FlashBeacons();
         else if (beaconController.IsFlashing == true && !isStuck)
             beaconController.DisableBeacons();
