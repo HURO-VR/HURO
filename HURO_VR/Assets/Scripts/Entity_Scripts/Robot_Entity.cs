@@ -257,7 +257,7 @@ public class RobotEntity : MonoBehaviour
         }
     }
     
-    public float robotNearbyDistance;
+    float robotNearbyDistance = 3;
     /// <summary>
     /// Checks if any GameObject with tag "Robot" is within robotNearbyDistance meters of this object's SphereCollider.
     /// </summary>
@@ -277,7 +277,6 @@ public class RobotEntity : MonoBehaviour
         {
             if (hit.gameObject != this.gameObject && hit.CompareTag("Robot"))
             {
-                //Debug.Log("Nearby: " + hit.gameObject.name);
                 return true;
             }
         }

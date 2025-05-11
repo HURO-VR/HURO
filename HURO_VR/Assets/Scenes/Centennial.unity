@@ -29936,7 +29936,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4014213736329188871, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: robotNearbyDistance
-      value: 1
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4014213736329188871, guid: f1a83328dca2acd4da8d93bcb4dd142a, type: 3}
       propertyPath: pallets.Array.data[0]
