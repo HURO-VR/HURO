@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
@@ -9,7 +10,7 @@ public class BarrelTutorial : MonoBehaviour
     // Add any [SerializeField] variables here if needed
     // Add Headers: [Header("Logging")]
     // Add Tips: [Tooltip("Runs the algorithm every X seconds.")]
-
+    [SerializeField] ClipboardController clipboardController;
     #endregion
 
     #region Public Variables
@@ -27,6 +28,8 @@ public class BarrelTutorial : MonoBehaviour
     {
         collider = GetComponent<BoxCollider>();
         audioLibrary = GameObject.Find("AudioLibrary").GetComponent<AudioLibrary>();
+        clipboardController =
+            FindObjectsByType<ClipboardController>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
     }
 
     private bool completed;
@@ -40,7 +43,7 @@ public class BarrelTutorial : MonoBehaviour
             
             ForkliftController.ActivateLift();
             var mark = Instantiate(markerController.gameObject);
-            mark.transform.position = new Vector3(5.32000017f, 0.560000002f, -0.660000026f);
+            mark.transform.position = new Vector3(5.32000017f, 0.02f, -0.660000026f);
             var control = mark.GetComponent<UserMarkerController>();
             control.SetMarkerType(UserMarkerController.MarkerType.Tutorial3);
             UserMarkerController.OnMarkerHit += type =>
@@ -48,7 +51,9 @@ public class BarrelTutorial : MonoBehaviour
                 if (type == UserMarkerController.MarkerType.Tutorial3)
                 {
                     var mark = Instantiate(markerController.gameObject);
-                    mark.transform.position = new Vector3(7.30000019f,0.560000002f,-3.25f);
+                    mark.transform.position = new Vector3(7.30000019f,0.02f,-3.25f);
+                    
+                    clipboardController.gameObject.SetActive(true);
                     var control = mark.GetComponent<UserMarkerController>();
                     ForkliftController.ActivateLift();
                 }

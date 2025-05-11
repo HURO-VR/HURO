@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClibboardController : MonoBehaviour
+public class ClipboardController : MonoBehaviour
 {
     
     
@@ -77,7 +77,7 @@ public class ClibboardController : MonoBehaviour
     private void Update()
     {
         if ((velocityMachine.transform.localPosition.x > 3.6f && !left) ||
-            (velocityMachine.transform.localPosition.x < 3.5339f && left))
+            (velocityMachine.transform.localPosition.x < 3.55f && left))
             TurnMachine();
         velocityMachine.velocity = -velocityMachine.transform.up * velocity;
     }
@@ -109,20 +109,20 @@ public class ClibboardController : MonoBehaviour
 
     private void TurnMachine()
     {
-        velocityMachine.transform.eulerAngles = new Vector3(velocityMachine.transform.eulerAngles.x, 
+        velocityMachine.transform.localEulerAngles = new Vector3(velocityMachine.transform.localEulerAngles.x, 
             velocityMachine.transform.localEulerAngles.y - 180, 
-            velocityMachine.transform.eulerAngles.z);
+            velocityMachine.transform.localEulerAngles.z);
         left = !left;
     }
 
     private void IncreaseVelocity(int i)
     {
-        velocity *= 1.1f;
+        velocity *= 1.2f;
     }
 
     private void DecreaseVelocity(int i)
     {
-        velocity /= 1.1f;
+        velocity /= 1.2f;
     }
 
     private void ScaleBuffer(int i)
