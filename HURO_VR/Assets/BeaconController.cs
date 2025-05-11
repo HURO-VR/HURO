@@ -7,10 +7,13 @@ using UnityEngine.Serialization;
 public class BeaconController : MonoBehaviour
 {
     #region Serialized Variables
+    [FormerlySerializedAs("flashMaterial")]
     [FormerlySerializedAs("litMaterial")]
     [Header("Beacon Settings")]
     [Tooltip("Material used while beacons are flashing.")]
-    [SerializeField] Material flashMaterial;
+    [SerializeField] Material collisionMaterial;
+    [SerializeField] Material stuckMaterial;
+    
 
     [Tooltip("Flash interval in seconds.")]
     [SerializeField] float flashInterval;
@@ -22,6 +25,8 @@ public class BeaconController : MonoBehaviour
     List<Renderer> beacons = new List<Renderer>();
     Material originalMaterial;
     Coroutine flashRoutine;
+    bool isStuck = false;
+    
     #endregion
 
     #region Unity Methods
@@ -56,6 +61,11 @@ public class BeaconController : MonoBehaviour
             flashRoutine = StartCoroutine(FlashRoutine());
     }
 
+    public void SetStuck(bool stuck)
+    {
+        this.isStuck = stuck;
+    }
+
     public void DisableBeacons()
     {
         if (flashRoutine != null)
@@ -78,10 +88,10 @@ public class BeaconController : MonoBehaviour
         while (true)
         {
             foreach (var beacon in beacons)
-                beacon.material = isLit ? originalMaterial : flashMaterial;
+                beacon.material = isLit ? originalMaterial : isStuck ? stuckMaterial : collisionMaterial;
 
             isLit = !isLit;
-            yield return new WaitForSeconds(flashInterval);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 

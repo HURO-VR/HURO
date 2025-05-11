@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ForkliftController : RobotEntity
 {
@@ -16,6 +17,7 @@ public class ForkliftController : RobotEntity
     #region Public Variables
     public bool PalletIsDown => lift.transform.position.y <= palletDownLimit;
     public bool PalletIsUp => lift.transform.position.y >= palletDownLimit + upAmount;
+    public static bool CanBreakDown = false;
     #endregion
 
     #region Private Variables
@@ -36,6 +38,9 @@ public class ForkliftController : RobotEntity
     private int emptyPalletIndex = 0;
     private int palletIndex = -1;
     private Vector3 originalRotation;
+    private Vector3 originalPosition;
+    private bool isStuck;
+    
     #endregion
 
     #region Unity Methods
@@ -68,6 +73,7 @@ public class ForkliftController : RobotEntity
                 break;
             }
         originalRotation = body.transform.rotation.eulerAngles;
+        originalPosition = body.transform.position;
         palletIndex = emptyPalletIndex + 1;
         palletIndex %= lift.transform.childCount;
         beaconController = gameObject.GetComponentInChildren<BeaconController>();
@@ -104,15 +110,32 @@ public class ForkliftController : RobotEntity
         return entity;
     }
 
+    private float rollDice = 0;
+    private bool timeout = false;
     private void Update()
     {
+        Random.InitState(Mathf.FloorToInt(Time.time));
         ManagePalletMovement();
         RotateToVelocity();
         ManageBeacons();
         
         if (transform.eulerAngles.x != originalRotation.x || transform.eulerAngles.z != originalRotation.z)
             transform.eulerAngles = new Vector3(originalRotation.x, transform.eulerAngles.y, originalRotation.z);
-        
+        if (transform.position.y != originalPosition.y)
+            transform.position = new Vector3(transform.position.x, originalPosition.y, transform.position.z);
+        if (CanBreakDown && !timeout && rollDice > 1f)
+        {
+            var ran = Random.Range(0, 20);
+            if (ran == 1)
+            {
+                isStuck = true;
+                body.isKinematic = true;
+                beaconController.SetStuck(isStuck);
+                beaconController.FlashBeacons();
+            }
+            rollDice = 0;
+        } else if (CanBreakDown && !isStuck && SimulationManager.Instance.IsRunning()) rollDice += Time.deltaTime;
+        if (rollDice > 10f) timeout = false;
         base.Update();
     }
     #endregion
@@ -163,6 +186,20 @@ public class ForkliftController : RobotEntity
                 child.gameObject.SetActive(false);
         emptyPallet.SetActive(true);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.GetComponent<UserObstacle>())
+        {
+            isStuck = false;
+            body.isKinematic = false;
+            beaconController.DisableBeacons();
+            beaconController.SetStuck(isStuck);
+            timeout = true;
+            rollDice = 0;
+        }
+    }
+
     #endregion
 
     #region Private Methods
@@ -172,7 +209,7 @@ public class ForkliftController : RobotEntity
         if (beaconController == null) return;
         if (base.IsRobotNearby() && beaconController.IsFlashing == false)
             beaconController.FlashBeacons();
-        else if (beaconController.IsFlashing == true)
+        else if (beaconController.IsFlashing == true && !isStuck)
             beaconController.DisableBeacons();
 
     }

@@ -61,13 +61,15 @@ public class BarrelTutorial : MonoBehaviour
                 else if (type == UserMarkerController.MarkerType.Tutorial4)
                 {
                     var mark = Instantiate(markerController.gameObject);
-                    mark.transform.position = new Vector3(6.30000019f, 0.02f, -3.25f);
+                    mark.transform.position = new Vector3(9.30000019f, 0.02f, -3.25f);
                     mark.GetComponent<UserMarkerController>().SetMarkerType(UserMarkerController.MarkerType.StartSimulation);
+                    SimulationManager.Instance.PauseAlgorithm();
                 }
                 // Start Simulation
                 else if (type == UserMarkerController.MarkerType.StartSimulation)
                 {
-                    SimulationManager.Instance.ToggleAlgorithm();
+                    ForkliftController.CanBreakDown = true;
+                    SimulationManager.Instance.StartAlgorithm();
                     clipboardController.gameObject.SetActive(false);
                 }
             };

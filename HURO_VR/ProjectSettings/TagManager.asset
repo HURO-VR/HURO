@@ -9,6 +9,7 @@ TagManager:
   - Robot
   - Goal
   - Beacon
+  - IndexFinger
   layers:
   - Default
   - TransparentFX

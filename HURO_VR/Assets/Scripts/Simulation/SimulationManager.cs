@@ -66,7 +66,7 @@ public class SimulationManager : MonoBehaviour
 
     #endregion
     
-    public static event Action OnSimulationStart;
+    //public static event Action OnSimulationStart;
     public static event Action OnSimulationEnd;
     public static SimulationManager Instance { get; private set; }
 
@@ -187,7 +187,7 @@ public class SimulationManager : MonoBehaviour
         if (!initAlgorithm) InitAlgorithm();
         if (!algorithmRunning)
         {
-            OnSimulationStart?.Invoke();
+            //OnSimulationStart?.Invoke();
         }
         algorithmRunning = true;
         Debug.Log("HURO: Starting simulation");
@@ -262,7 +262,7 @@ public class SimulationManager : MonoBehaviour
     /// <summary>
     /// Pauses the algorithm by stopping all robot movement and resetting the timer.
     /// </summary>
-    void PauseAlgorithm()
+    public void PauseAlgorithm()
     {
         algorithmRunning = false;
         GameObject[] robots = GameObject.FindGameObjectsWithTag("Robot");
@@ -274,6 +274,7 @@ public class SimulationManager : MonoBehaviour
                 rigidbody.velocity = Vector3.zero;
             }
         }
+        Debug.Log("Pause Simulation");
         timer = 0f;
     }
 

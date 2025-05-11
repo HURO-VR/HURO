@@ -17,7 +17,7 @@ namespace Entity_Scripts
             locator.transform.SetParent(gameObject.transform);
             //spotLight.GetComponent<Light>().color = lightColor;
             locator.SetActive(true);
-            SimulationManager.OnSimulationStart += () => locator.SetActive(false);
+            //SimulationManager.OnSimulationStart += () => locator.SetActive(false);
         }
     }
 }
