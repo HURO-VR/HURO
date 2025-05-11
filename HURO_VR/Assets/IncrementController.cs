@@ -10,10 +10,11 @@ public class IncrementController : MonoBehaviour
     [SerializeField] private List<GameObject> numberList;
     private GameObject currentNumber;
     private int currentIndex = 0;
-    public event Action OnIncrement;
-    public event Action OnDecrement;
+    public event Action<int> OnIncrement;
+    public event Action<int> OnDecrement;
 
-    private void Awake()
+    
+    private void Start()
     {
         var arrows = GetComponentsInChildren<ArrowController>();
         foreach (var arrow in arrows)
@@ -25,11 +26,6 @@ public class IncrementController : MonoBehaviour
         }
 
         currentNumber = numberList[currentIndex];
-    }
-
-    
-    private void Start()
-    {
         UpdateDisplay();
     }
 
@@ -39,7 +35,7 @@ public class IncrementController : MonoBehaviour
         {
             currentIndex++;
             UpdateDisplay();
-            OnIncrement?.Invoke();
+            OnIncrement?.Invoke(currentIndex);
         }
     }
 
@@ -49,7 +45,7 @@ public class IncrementController : MonoBehaviour
         {
             currentIndex--;
             UpdateDisplay();
-            OnDecrement?.Invoke();
+            OnDecrement?.Invoke(currentIndex);
         }
     }
 

@@ -1,0 +1,135 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ClibboardController : MonoBehaviour
+{
+    
+    
+    #region Serialized Variables
+    // Add any [SerializeField] variables here if needed
+    // Add Headers: [Header("Logging")]
+    // Add Tips: [Tooltip("Runs the algorithm every X seconds.")]
+
+    #endregion
+
+    #region Public Variables
+    // Add public variables here
+    #endregion
+
+    #region Private Variables
+    IncrementController machineController;
+    IncrementController velocityController;
+    IncrementController bufferController;
+    
+    public List<GameObject> machines;
+    private Rigidbody velocityMachine;
+    private Vector3 originalPosition;
+    float velocity = 0.07f;
+    private GameObject bufferHalo;
+    float buffer;
+    #endregion
+
+    #region Unity Methods
+
+    private void Awake()
+    {
+        var controllers = gameObject.GetComponentsInChildren<IncrementController>();
+        foreach (var controller in controllers)
+        {
+            if (controller.name.ToLower().Contains("machine"))
+                machineController = controller;
+            if (controller.name.ToLower().Contains("velocity"))
+            {
+                velocityController = controller;
+                foreach (Transform child in controller.transform)
+                    if (child.name.ToLower().Contains("forklift"))
+                        velocityMachine = child.gameObject.GetComponent<Rigidbody>();
+            }
+            if (controller.name.ToLower().Contains("buffer"))
+            {
+                bufferController = controller;
+                foreach (Transform child in controller.transform)
+                    if (child.name.ToLower().Contains("halo"))
+                        bufferHalo = child.gameObject;
+            }
+        }
+        velocityMachine.constraints = RigidbodyConstraints.FreezePositionY;
+        originalPosition = velocityMachine.transform.localPosition;
+        machineController.OnIncrement += DisplayMachine;
+        machineController.OnDecrement += HideMachine;
+        
+        velocityController.OnIncrement += IncreaseVelocity;
+        velocityController.OnDecrement += DecreaseVelocity;
+
+        bufferController.OnIncrement += ScaleBuffer;
+        bufferController.OnDecrement += ShrinkBuffer;
+
+    }
+
+    private void Start()
+    {
+        // Initialization code
+    }
+
+    private bool left = true;
+    private void Update()
+    {
+        if ((velocityMachine.transform.localPosition.x > 3.6f && !left) ||
+            (velocityMachine.transform.localPosition.x < 3.5339f && left))
+            TurnMachine();
+        velocityMachine.velocity = -velocityMachine.transform.up * velocity;
+    }
+    #endregion
+
+    #region Public Methods
+    // Add public methods here
+    #endregion
+
+    #region Private Methods
+
+    private void DisplayMachine(int i)
+    {
+        if (i < machines.Count)
+        {
+            machines[i].SetActive(true);
+        }
+    }
+
+    private void HideMachine(int i)
+    {
+        if (i + 1 > 0)
+        {
+            machines[i + 1].SetActive(false);
+        }
+    }
+
+    private void TurnMachine()
+    {
+        velocityMachine.transform.eulerAngles = new Vector3(velocityMachine.transform.eulerAngles.x, 
+            velocityMachine.transform.localEulerAngles.y - 180, 
+            velocityMachine.transform.eulerAngles.z);
+        left = !left;
+    }
+
+    private void IncreaseVelocity(int i)
+    {
+        velocity *= 1.1f;
+    }
+
+    private void DecreaseVelocity(int i)
+    {
+        velocity /= 1.1f;
+    }
+
+    private void ScaleBuffer(int i)
+    {
+        bufferHalo.transform.localScale *= 1.2f;
+    }
+
+    private void ShrinkBuffer(int i)
+    {
+        bufferHalo.transform.localScale /= 1.2f;
+    }
+    #endregion
+}

@@ -22,11 +22,12 @@ public class UserObstacle : MonoBehaviour
     #region Unity Methods
     private void Awake()
     {
-        cameraRig = FindAnyObjectByType<OVRCameraRig>().transform;
+        cameraRig = FindAnyObjectByType<OVRCameraRig>()?.transform;
     }
 
     private void Update()
     {
+        if (cameraRig == null) return;
         Vector2 input = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
 
         // Early out if there's no input
