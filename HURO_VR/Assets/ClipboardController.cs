@@ -95,6 +95,7 @@ public class ClipboardController : MonoBehaviour
         {
             machines[i].SetActive(true);
             numMachines++;
+            RunDataCollector.SetNumMachines(numMachines);
         }
     }
 
@@ -104,6 +105,7 @@ public class ClipboardController : MonoBehaviour
         {
             machines[i + 1].SetActive(false);
             numMachines--;
+            RunDataCollector.SetNumMachines(numMachines);
         }
     }
 
@@ -118,23 +120,27 @@ public class ClipboardController : MonoBehaviour
     private void IncreaseVelocity(int i)
     {
         velocity *= 1.2f;
+        RunDataCollector.SetVelocity(i + 1);
     }
 
     private void DecreaseVelocity(int i)
     {
         velocity /= 1.2f;
+        RunDataCollector.SetVelocity(i + 1);
     }
 
     private void ScaleBuffer(int i)
     {
         bufferHalo.transform.localScale *= 1.2f;
         bufferScale *= 1.2f;
+        RunDataCollector.SetClearance(i + 1);
     }
 
     private void ShrinkBuffer(int i)
     {
         bufferHalo.transform.localScale /= 1.2f;
         bufferScale /= 1.2f;
+        RunDataCollector.SetClearance(i + 1);
     }
     #endregion
 }

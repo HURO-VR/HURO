@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using Firebase.Firestore;
 using UnityEngine;
 using Newtonsoft.Json;
+using RunDataCollection.Classes;
 
 /// <summary>
 /// A static data collector that manages run metadata, robot data, and simulation data for the current session.
@@ -12,6 +15,7 @@ public static class RunDataCollector
     /// Gets the metadata for the current run.
     /// </summary>
     public static RunMetadata runMetadata { get; private set; }
+    public static CentennialData centennialData { get; private set; }
     #endregion
 
     # region Private Members
@@ -19,11 +23,14 @@ public static class RunDataCollector
     /// The simulation start time in milliseconds.
     /// </summary>
     private static float simulationStartTime;
-
+    private static Storage db = GameObject.FindObjectOfType<Storage>();
     /// <summary>
     /// Flag indicating whether the simulation data collector has been initialized.
     /// </summary>
     private static bool initalized = false;
+
+    private static bool isCentennialData = true;
+    public static bool isLogging { get; private set; } = false;
     #endregion
 
     # region Serializable Fields
@@ -38,25 +45,45 @@ public static class RunDataCollector
     /// <param name="sceneData">The scene data output containing obstacles and other scene information.</param>
     public static void InitializeSimulation(SceneDataManager.SceneDataOutput sceneData)
     {
-        runMetadata = new RunMetadata
+        if (isCentennialData)
         {
-            dateCreated = System.DateTime.UtcNow.ToString("o"),
-            status = RunStatus.success.ToString(),
-            starred = false,
-            runID = System.Guid.NewGuid().ToString(),
-            name = $"Run ..", // Set in Session Controller
-            data = new RunData
-            {
-                robotData = InitAllRobotData(),
-                obstacleData = InitObstacles(sceneData),
-                totalCollisions = new List<XYZ>(),
-                deadlock = false
-            }
-        };
+            centennialData = new CentennialData();
+        }
+        else
+        {
+                runMetadata = new RunMetadata
+                {
+                    dateCreated = System.DateTime.UtcNow.ToString("o"),
+                    status = RunStatus.success.ToString(),
+                    starred = false,
+                    runID = System.Guid.NewGuid().ToString(),
+                    name = $"Run ..", // Set in Session Controller
+                    data = new RunData
+                    {
+                        robotData = InitAllRobotData(),
+                        obstacleData = InitObstacles(sceneData),
+                        totalCollisions = new List<XYZ>(),
+                        deadlock = false
+                    }
+                };
+                isLogging = true;
+        }
 
+        if (db == null) db = GameObject.FindAnyObjectByType<Storage>();
         simulationStartTime = Time.time * 1000; // Convert to milliseconds
         initalized = true;
         Debug.Log("HURO: Initalized Data Collector");
+    }
+
+    public static void UploadLogData()
+    {
+        if (!isCentennialData) return;
+        centennialData.timeCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        db.UploadMetadata($"centennial/{centennialData.timeCreated}", centennialData.ToJson(), b =>
+        {
+            Debug.Log("Centennial Data Upload complete.");
+        });
+        isLogging = false;
     }
 
     /// <summary>
@@ -64,6 +91,7 @@ public static class RunDataCollector
     /// </summary>
     public static void UpdateRobotData()
     {
+        if (isCentennialData) return;
         GameObject[] robots = GameObject.FindGameObjectsWithTag("Robot");
 
         foreach (var robotData in runMetadata.data.robotData)
@@ -85,13 +113,40 @@ public static class RunDataCollector
             }
         }
     }
-
     /// <summary>
     /// Logs a hit from the server by incrementing the server hit count.
     /// </summary>
     public static void LogServerHit()
     {
+        if  (isCentennialData) return;
         runMetadata.serverHits++;
+    }
+    public static void StartLogging() => isLogging = true;
+    public static void LogCollision() {
+        if (isLogging)
+        {
+            centennialData.collisions++;
+            Debug.Log($"Logged collision. Now: {centennialData.collisions}");
+        }
+    }
+    public static void LogRoundTrip() {
+        if (isLogging) centennialData.roundTrips++;
+    }
+
+    public static void SetNumMachines(int numMachines)
+    {
+        centennialData.numMachines = numMachines;
+    }
+
+    public static void SetVelocity(float velocity)
+    {
+        centennialData.maxVelocity = velocity;
+    } 
+    
+
+    public static void SetClearance(float clearance)
+    {
+        centennialData.clearance = clearance;
     }
 
     /// <summary>
@@ -146,15 +201,24 @@ public static class RunDataCollector
             Debug.LogWarning("unitialized sim data");
             return;
         }
-        foreach (var ro in runMetadata.data.robotData)
+
+        if (isCentennialData)
         {
-            if (!ro.goalReached)
-            {
-                ro.robotEnd = ro.robotPath[ro.robotPath.Count - 1];
-            }
+            
         }
-        runMetadata.data.timeToComplete = (int)((Time.time * 1000) - simulationStartTime);
-        runMetadata.data.deadlock = !CheckAllRobotsReachedGoal();
+        else
+        {
+            foreach (var ro in runMetadata.data.robotData)
+            {
+                if (!ro.goalReached)
+                {
+                    ro.robotEnd = ro.robotPath[ro.robotPath.Count - 1];
+                }
+            }
+            runMetadata.data.timeToComplete = (int)((Time.time * 1000) - simulationStartTime);
+            runMetadata.data.deadlock = !CheckAllRobotsReachedGoal();
+        }
+
         Debug.Log("HURO: Simulation Ended");
         initalized = false;
     }

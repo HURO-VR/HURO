@@ -343,10 +343,10 @@ public class SimulationManager : MonoBehaviour
     /// <returns>True if simulation should terminate; otherwise, false.</returns>
     bool ShouldTerminate()
     {
+        return false;
         bool timeout = totalTime > simulationTimeout;
         bool reachedGoals = RunDataCollector.CheckAllRobotsReachedGoal();
         bool deadlock = true;
-        return false;
         RobotEntity[] robots = FindObjectsByType<RobotEntity>(FindObjectsSortMode.InstanceID);
         foreach (var robot in robots)
         {

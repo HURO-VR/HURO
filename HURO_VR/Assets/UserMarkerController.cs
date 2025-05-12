@@ -38,7 +38,7 @@ public class UserMarkerController : MonoBehaviour
     private UserObstacle user;
     private AudioLibrary audioLibrary;
     [SerializeField]
-    private AudioLibrary.AudioType audioType;
+    private AudioLibrary.AudioType audioType = AudioLibrary.AudioType.None;
     #endregion
 
     #region Unity Methods
@@ -54,6 +54,7 @@ public class UserMarkerController : MonoBehaviour
     public void SetMarkerType(MarkerType markerType)
     {
         this.markerType = markerType;
+        audioType = AudioLibrary.AudioType.None;
         foreach (var type in Enum.GetValues(typeof(AudioLibrary.AudioType)))
             if (markerType.ToString().Equals(type.ToString()))
                 audioType = (AudioLibrary.AudioType)type;

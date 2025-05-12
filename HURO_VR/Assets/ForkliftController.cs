@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(BoxCollider))]
 public class ForkliftController : RobotEntity
 {
     
@@ -39,7 +40,9 @@ public class ForkliftController : RobotEntity
     private int palletIndex = -1;
     private Vector3 originalRotation;
     private Vector3 originalPosition;
-    private bool isStuck;
+    private BoxCollider boxCollider;
+    private SphereCollider sphereCollider;
+    public bool isStuck { get; private set; }
     
     #endregion
 
@@ -48,6 +51,8 @@ public class ForkliftController : RobotEntity
     private void Awake()
     {
         base.Awake();
+        boxCollider = GetComponent<BoxCollider>();
+        sphereCollider = GetComponent<SphereCollider>();
         foreach (Transform child in transform)
             if (child.name == "Lift")
                 lift = child.gameObject;
@@ -177,6 +182,7 @@ public class ForkliftController : RobotEntity
     public void LowerPallet()
     {
         movePalletUp = false;
+        RunDataCollector.LogRoundTrip();
     }
 
     void EmptyPallet()
@@ -187,9 +193,10 @@ public class ForkliftController : RobotEntity
         emptyPallet.SetActive(true);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.GetComponent<UserObstacle>())
+        bool isUser = other.gameObject.GetComponent<UserObstacle>();
+        if (isUser && isStuck)
         {
             isStuck = false;
             body.isKinematic = false;
@@ -198,6 +205,15 @@ public class ForkliftController : RobotEntity
             timeout = true;
             rollDice = 0;
         }
+        else
+        {
+            var robot = other.gameObject.GetComponent<ForkliftController>();
+            bool isRobot = robot != null ? robot.isStuck : false;
+            bool isPriority = robot != null ? this.ID > robot.ID : true;
+            bool isOther = other.gameObject.CompareTag("Obstacle");
+            if ((isUser || isOther || isRobot) && isPriority && !isStuck) RunDataCollector.LogCollision();
+        }
+
     }
 
     #endregion

@@ -52,6 +52,8 @@ public class RobotEntity : MonoBehaviour
     /// Maximum velocity for the robot.
     /// </summary>
     public float maxVelocity;
+    public int ID {get; private set;}
+    private static int nextID = 0;
 
     /// <summary>
     /// Gets a value indicating whether the robot is stuck (in deadlock).
@@ -82,6 +84,7 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     protected void Awake()
     {
+        ID = nextID++;
         stuck = false;
         algorithmRunner = FindAnyObjectByType<SimulationManager>();
         body = GetComponent<Rigidbody>();

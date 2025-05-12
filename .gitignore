@@ -261,3 +261,7 @@ node_modules
 /firebase_CLI/functions/node_modules
 *.pub
 HURO_VR/Assets/StreamingAssets/google_compute_engine
+HURO_VR/Assets/google-services.json
+HURO_VR/Assets/google-services.json.meta
+HURO_VR/Assets/StreamingAssets/google-services-desktop.json
+HURO_VR/Assets/StreamingAssets/google-services-desktop.json.meta

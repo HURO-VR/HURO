@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AudioLibrary : MonoBehaviour
@@ -12,7 +13,9 @@ public class AudioLibrary : MonoBehaviour
         Tutorial3,
         Tutorial4,
         Tutorial5,
-        BackgroundNoise
+        BackgroundNoise,
+        SimFinsh,
+        None
     }
 
     //public static AudioLibrary Instance;
@@ -30,6 +33,7 @@ public class AudioLibrary : MonoBehaviour
     private Dictionary<AudioType, AudioClipEntry> audioClipDictionary;
 
     private AudioSource audioSource;
+    private AudioSource backgroundAudioSource;
     public List<AudioType> audioOnStart = new List<AudioType>();
 
     private void Awake()
@@ -43,12 +47,14 @@ public class AudioLibrary : MonoBehaviour
         //{
         //    Destroy(gameObject);
         //}
-
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
+        var sources = GetComponents<AudioSource>().ToList();
+        if (sources.Count < 3)
+            sources.Add(gameObject.AddComponent<AudioSource>());
+        if (sources.Count < 3)
+            sources.Add(gameObject.AddComponent<AudioSource>());
+        
+        audioSource = sources[0];
+        backgroundAudioSource = sources[1];
         // Initialize the dictionary
         audioClipDictionary = new Dictionary<AudioType, AudioClipEntry>();
         foreach (var entry in audioClips)
@@ -59,14 +65,16 @@ public class AudioLibrary : MonoBehaviour
 
     public void Start()
     {
-        foreach (var start in audioOnStart) PlayAudio(start);
+        foreach (var start in audioOnStart) PlayAudio(start, true);
     }
 
-    public void PlayAudio(AudioType type)
+    public void PlayAudio(AudioType type, bool background = false)
     {
         if (audioClipDictionary.TryGetValue(type, out AudioClipEntry clip))
         {
-            audioSource.PlayOneShot(clip.clip, clip.volume);
+            audioSource.Stop();
+            if (!background) audioSource.PlayOneShot(clip.clip, clip.volume);
+            else backgroundAudioSource.PlayOneShot(clip.clip, clip.volume);
         }
         else
         {

@@ -11,6 +11,7 @@ public class BarrelTutorial : MonoBehaviour
     // Add Headers: [Header("Logging")]
     // Add Tips: [Tooltip("Runs the algorithm every X seconds.")]
     ClipboardController clipboardController;
+    
     #endregion
 
     #region Public Variables
@@ -20,7 +21,8 @@ public class BarrelTutorial : MonoBehaviour
 
     #region Private Variables
     AudioLibrary audioLibrary;
-    
+    private int sessionLength = 60;
+    private float sessionTimer = 0;
     #endregion
 
     #region Unity Methods
@@ -33,12 +35,35 @@ public class BarrelTutorial : MonoBehaviour
     }
 
     private bool completed;
+    private bool simCompleted;
 
     private void Update()
     {
         if (!completed && IsRobotNearby())
         {
-            if (audioLibrary)
+            InstantiateMarkers();
+            completed = true;
+        }
+        
+        if (sessionTimer >= sessionLength && !simCompleted)
+        {
+            simCompleted = true;
+            RunDataCollector.UploadLogData();
+            audioLibrary.PlayAudio(AudioLibrary.AudioType.SimFinsh);
+        }
+        else if (RunDataCollector.isLogging) sessionTimer += Time.deltaTime;
+    }
+    #endregion
+
+    #region Public Methods
+    // Add public methods here
+    #endregion
+
+    #region Private Methods
+
+    private void InstantiateMarkers()
+    {
+        if (audioLibrary)
                 audioLibrary.PlayAudio(AudioLibrary.AudioType.Tutorial2);
             
             ForkliftController.ActivateLift();
@@ -70,19 +95,11 @@ public class BarrelTutorial : MonoBehaviour
                 {
                     ForkliftController.CanBreakDown = true;
                     SimulationManager.Instance.StartAlgorithm();
+                    RunDataCollector.StartLogging();
                     clipboardController.gameObject.SetActive(false);
                 }
             };
-            completed = true;
-        }
     }
-    #endregion
-
-    #region Public Methods
-    // Add public methods here
-    #endregion
-
-    #region Private Methods
     public float robotNearbyDistance;
     /// <summary>
     /// Checks if any GameObject with tag "Robot" is within robotNearbyDistance meters of this object's SphereCollider.

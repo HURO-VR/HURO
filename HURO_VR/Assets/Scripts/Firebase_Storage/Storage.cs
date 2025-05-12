@@ -7,6 +7,7 @@ using Firebase.Firestore;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
+using RunDataCollection.Classes;
 
 public class FileType
 {
@@ -34,7 +35,6 @@ public class Storage : MonoBehaviour
     {
         storage = FirebaseStorage.DefaultInstance;
         firestore = FirebaseFirestore.DefaultInstance;
-
     }
 
 
