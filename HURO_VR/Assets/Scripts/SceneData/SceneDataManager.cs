@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ public partial class SceneDataManager : MonoBehaviour
     #region Public Variables
 
     public MRUKAnchor.SceneLabels mrukObstacleLabel;
-
+    public static SceneDataManager Instance;
     #endregion
 
     #region Private Variables
@@ -27,6 +28,11 @@ public partial class SceneDataManager : MonoBehaviour
     #endregion
 
     #region Unity Methods
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     /// <summary>
     /// Initializes the SceneDataManager and finds the MRUKRoom instance.
@@ -46,10 +52,11 @@ public partial class SceneDataManager : MonoBehaviour
     /// </summary>
     public void InitSceneData()
     {
+        initalized = false;
         if (mruk) LabelMRObjects();
 
-        robots = InitRobotData();
-        Debug.Log("Initalized Robots: " + robots.Length);
+        InitRobotData();
+        Debug.Log("Initalized Robots: " + robots.Count);
 
         Robot[] goals = robots.Where((robot) => robot.goal.x != 0).ToArray();
         Debug.Log("Initalized Goals: " + goals.Length );
@@ -72,6 +79,7 @@ public partial class SceneDataManager : MonoBehaviour
     public void UpdateSceneData()
     {
         UpdateRobotData();
+        UpdateRobotGoals();
         UpdateObstacleData();
     }
 
@@ -87,7 +95,8 @@ public partial class SceneDataManager : MonoBehaviour
             }
 
         if (boundary != null) boundary.DrawGizmo();
-        if (robots != null) foreach (var robot in robots)
+        if (robots != null) 
+            foreach (var robot in robots)
             {
                 robot.DrawGizmo();
             }
@@ -128,22 +137,25 @@ public partial class SceneDataManager : MonoBehaviour
     /// Initializes robot data from GameObjects tagged as "Robot".
     /// </summary>
     /// <returns>An array of Robot instances.</returns>
-    private Robot[] InitRobotData()
+    private void InitRobotData()
     {
+        robots.Clear();
         List<GameObject> robot_gos = new List<GameObject>();
         var all = GameObject.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
         foreach (Transform go in all)
             if (go.CompareTag("Robot"))
                 robot_gos.Add(go.gameObject);
                 
-        Robot[] robots = new Robot[robot_gos.Count];
-        int i = 0;
         foreach (GameObject robot_go in robot_gos)
         {
-            robots[i] = new Robot(robot_go);
-            i++;
+            robots.Add(new Robot(robot_go));
         }
-        return robots;
+    }
+
+    public void AddRobot(GameObject robot)
+    {
+        robots.Add(new Robot(robot));
+        Debug.Log($"Have {robots.Count} robots.");
     }
 
     /// <summary>

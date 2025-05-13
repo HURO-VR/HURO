@@ -72,7 +72,7 @@ public class AudioLibrary : MonoBehaviour
     {
         if (audioClipDictionary.TryGetValue(type, out AudioClipEntry clip))
         {
-            audioSource.Stop();
+            if (!background) audioSource.Stop();
             if (!background) audioSource.PlayOneShot(clip.clip, clip.volume);
             else backgroundAudioSource.PlayOneShot(clip.clip, clip.volume);
         }

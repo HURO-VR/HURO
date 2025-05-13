@@ -95,6 +95,7 @@ public class ClipboardController : MonoBehaviour
         {
             machines[i].SetActive(true);
             numMachines++;
+            ForkliftController.SpawnForklift();
             RunDataCollector.SetNumMachines(numMachines);
         }
     }
@@ -105,6 +106,7 @@ public class ClipboardController : MonoBehaviour
         {
             machines[i + 1].SetActive(false);
             numMachines--;
+            ForkliftController.DestroyForklift();
             RunDataCollector.SetNumMachines(numMachines);
         }
     }
@@ -117,22 +119,26 @@ public class ClipboardController : MonoBehaviour
         left = !left;
     }
 
+    private float scale = 1.2f;
     private void IncreaseVelocity(int i)
     {
         velocity *= 1.2f;
         RunDataCollector.SetVelocity(i + 1);
+        RobotEntity.IncreaseVelocity(scale);
     }
 
     private void DecreaseVelocity(int i)
     {
         velocity /= 1.2f;
         RunDataCollector.SetVelocity(i + 1);
+        RobotEntity.DecreaseVelocity(scale);
     }
 
     private void ScaleBuffer(int i)
     {
         bufferHalo.transform.localScale *= 1.2f;
         bufferScale *= 1.2f;
+        RobotEntity.IncreaseClearance(scale);
         RunDataCollector.SetClearance(i + 1);
     }
 
@@ -140,6 +146,7 @@ public class ClipboardController : MonoBehaviour
     {
         bufferHalo.transform.localScale /= 1.2f;
         bufferScale /= 1.2f;
+        RobotEntity.DecreaseClearance(scale);
         RunDataCollector.SetClearance(i + 1);
     }
     #endregion

@@ -20,6 +20,8 @@ public class RobotEntity : MonoBehaviour
     private GameObject _goal;
     private GameObject goal;
     
+    static List<RobotEntity> instances = new List<RobotEntity>();
+    
     /// <summary>
     /// Indicates whether the robot has reached its goal.
     /// </summary>
@@ -30,7 +32,7 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     protected Rigidbody body;
 
-    private SphereCollider collider;
+    private SphereCollider sphereCollider;
 
     /// <summary>
     /// Reference to the simulation manager.
@@ -84,11 +86,12 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     protected void Awake()
     {
+        instances.Add(this);
         ID = nextID++;
         stuck = false;
         algorithmRunner = FindAnyObjectByType<SimulationManager>();
         body = GetComponent<Rigidbody>();
-        collider = GetComponent<SphereCollider>();
+        sphereCollider = GetComponent<SphereCollider>();
         gameObject.tag = "Robot";
     }
 
@@ -267,13 +270,13 @@ public class RobotEntity : MonoBehaviour
     /// <returns>True if at least one Robot is nearby; otherwise, false.</returns>
     public bool IsRobotNearby()
     {
-        if (collider == null)
+        if (sphereCollider == null)
         {
             Debug.LogWarning("SphereCollider not found.");
             return false;
         }
 
-        Vector3 center = collider.transform.TransformPoint(collider.center);
+        Vector3 center = sphereCollider.transform.TransformPoint(sphereCollider.center);
 
         Collider[] hits = Physics.OverlapSphere(center, robotNearbyDistance);
         foreach (Collider hit in hits)
@@ -287,15 +290,39 @@ public class RobotEntity : MonoBehaviour
         return false;
     }
     
+    public static void IncreaseClearance(float scale)
+    {
+        foreach (var robot in instances)
+            robot.sphereCollider.radius *= scale;
+    }
+    
+    public static void DecreaseClearance(float scale)
+    {
+        foreach (var robot in instances)
+            robot.sphereCollider.radius /= scale;
+    }
+
+    public static void IncreaseVelocity(float scale)
+    {
+        foreach (var robot in instances)
+            robot.maxVelocity *= scale;
+    }
+    
+    public static void DecreaseVelocity(float scale)
+    {
+        foreach (var robot in instances)
+            robot.maxVelocity /= scale;
+    }
+    
     public bool IsObstacleNearby()
     {
-        if (collider == null)
+        if (sphereCollider == null)
         {
             Debug.LogWarning("SphereCollider not found.");
             return false;
         }
 
-        Vector3 center = collider.transform.TransformPoint(collider.center);
+        Vector3 center = sphereCollider.transform.TransformPoint(sphereCollider.center);
 
         Collider[] hits = Physics.OverlapSphere(center, robotNearbyDistance);
         foreach (Collider hit in hits)

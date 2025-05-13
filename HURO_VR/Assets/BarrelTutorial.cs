@@ -66,7 +66,7 @@ public class BarrelTutorial : MonoBehaviour
         if (audioLibrary)
                 audioLibrary.PlayAudio(AudioLibrary.AudioType.Tutorial2);
             
-            ForkliftController.ActivateLift();
+            ForkliftController.ActivateForklift();
             var mark = Instantiate(markerController.gameObject);
             mark.transform.position = new Vector3(5.32000017f, 0.02f, -0.660000026f);
             var control = mark.GetComponent<UserMarkerController>();
@@ -80,7 +80,7 @@ public class BarrelTutorial : MonoBehaviour
                     mark.transform.position = new Vector3(7.30000019f, 0.02f, -3.25f);
                     mark.GetComponent<UserMarkerController>().SetMarkerType(UserMarkerController.MarkerType.Tutorial4);
                     clipboardController.gameObject.SetActive(true);
-                    ForkliftController.ActivateLift();
+                    ForkliftController.ActivateForklift();
                 }
                 // Clipboard Mark
                 else if (type == UserMarkerController.MarkerType.Tutorial4)
@@ -88,12 +88,17 @@ public class BarrelTutorial : MonoBehaviour
                     var mark = Instantiate(markerController.gameObject);
                     mark.transform.position = new Vector3(9.30000019f, 0.02f, -3.25f);
                     mark.GetComponent<UserMarkerController>().SetMarkerType(UserMarkerController.MarkerType.StartSimulation);
+                    ForkliftController.HideForklifts();
+                    ForkliftController.SpawnForklift();
+                    SceneDataManager.Instance.InitSceneData();
                     SimulationManager.Instance.PauseAlgorithm();
                 }
                 // Start Simulation
                 else if (type == UserMarkerController.MarkerType.StartSimulation)
                 {
                     ForkliftController.CanBreakDown = true;
+                    ForkliftController.DestroyInitialForklifts();
+                    SceneDataManager.Instance.InitSceneData();
                     SimulationManager.Instance.StartAlgorithm();
                     RunDataCollector.StartLogging();
                     clipboardController.gameObject.SetActive(false);

@@ -26,10 +26,10 @@ public class ForkliftController : RobotEntity
     private GameObject lift;
     private bool movePalletUp = false;
     private bool movePalletDown => !movePalletUp;
-    private float palletDownLimit;
+    private static float palletDownLimit = -100;
     private float palletUpLimit => palletDownLimit + upAmount;
     private float upAmount = 0.94f;
-    private GameObject currGoal;
+    protected GameObject currGoal;
     List<Vector3> goalPositions;
     [SerializeField] List<Transform> entryPoints;
     private int goalIndex = 0;
@@ -56,18 +56,18 @@ public class ForkliftController : RobotEntity
         foreach (Transform child in transform)
             if (child.name == "Lift")
                 lift = child.gameObject;
-        palletDownLimit = lift.transform.position.y;
+        if (palletDownLimit == -100) palletDownLimit = lift.transform.position.y;
         base.OnGoalReached += () =>
         {
             if (PalletIsUp) LowerPallet();
             else if (PalletIsDown) LiftPallet();
-            base.ResetGoal(RotateGoal());
+            RotateGoal();
         };
         goalPositions = new List<Vector3>();
         foreach (Transform child in entryPoints)
             goalPositions.Add(child.position);
         base.body.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezePositionY;
-        this.ResetGoal(RotateGoal());
+        RotateGoal();
 
         body = gameObject.GetComponent<Rigidbody>();
         for (int i = 0; i < lift.transform.childCount; i++)
@@ -82,7 +82,7 @@ public class ForkliftController : RobotEntity
         palletIndex = emptyPalletIndex + 1;
         palletIndex %= lift.transform.childCount;
         beaconController = gameObject.GetComponentInChildren<BeaconController>();
-        _forkliftControllers = FindObjectsByType<ForkliftController>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+        if (_initialForkliftControllers == null) _initialForkliftControllers = FindObjectsByType<ForkliftController>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
     }
     
     
@@ -102,17 +102,18 @@ public class ForkliftController : RobotEntity
         base.Start();
     }
 
-    private GoalEntity RotateGoal()
+    private void RotateGoal(bool reset = true)
     {
         Destroy(currGoal);
         currGoal = new GameObject();
+        currGoal.name = name + "_Goal";
         var entity = currGoal.AddComponent<GoalEntity>();
         
         currGoal.tag = "Goal";
         currGoal.transform.position = goalPositions[goalIndex];
         goalIndex++;
         if (goalIndex >= goalPositions.Count) goalIndex = 0;
-        return entity;
+        if (reset) base.ResetGoal(entity);
     }
 
     private float rollDice = 0;
@@ -152,15 +153,68 @@ public class ForkliftController : RobotEntity
         FillPallet();
     }
 
-    private static ForkliftController[] _forkliftControllers;
+    private static ForkliftController[] _initialForkliftControllers;
 
-    public static void ActivateLift()
+    public static void ActivateForklift()
     {
         GameObject spawn = null;
-        foreach (var lift in _forkliftControllers)
+        foreach (var lift in _initialForkliftControllers)
             if (lift.gameObject.activeSelf == false)
                 spawn = lift.gameObject;
         if (spawn) spawn.SetActive(true);
+    }
+
+    public static void HideForklifts()
+    {
+        foreach (var forkliftController in _initialForkliftControllers)
+        {
+            forkliftController.gameObject.SetActive(false);
+            forkliftController.transform.position = new Vector3(30, forkliftController.transform.position.y, 30);
+        }
+    }
+
+    public static List<ForkliftController> SpawnedForklifts = new List<ForkliftController>();
+
+    public static void SpawnForklift()
+    {
+        var scene = GameObject.Find("Scene");
+        var floor = GameObject.FindGameObjectWithTag("Floor");
+        var numForklifts = FindObjectsByType<ForkliftController>(FindObjectsSortMode.None).Length;
+        var index = numForklifts % _initialForkliftControllers.Length;
+        var position = new Vector3((-6.5f + (3 * numForklifts)), 0.244f, 0);
+        var spawn = Instantiate(_initialForkliftControllers[index].gameObject);
+        spawn.transform.position = position;
+        spawn.transform.eulerAngles = new Vector3(0, 270, 90);
+        spawn.gameObject.SetActive(true);
+        spawn.name = spawn.name + " " + numForklifts;
+        spawn.transform.SetParent(scene.transform);
+        spawn.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        SpawnedForklifts.Add(spawn.GetComponent<ForkliftController>());
+        if (numForklifts >= 3)
+        {
+            SpawnedForklifts[SpawnedForklifts.Count - 1].LiftPallet();
+            SpawnedForklifts[SpawnedForklifts.Count - 1].RotateGoal(false);
+
+        } else SpawnedForklifts[SpawnedForklifts.Count - 1].LowerPallet(true);
+        SceneDataManager.Instance.AddRobot(spawn);
+    }
+
+    public static void DestroyForklift()
+    {
+        var lift = SpawnedForklifts[SpawnedForklifts.Count - 1];
+        SpawnedForklifts.RemoveAt(SpawnedForklifts.Count - 1);
+        lift.gameObject.SetActive(false);
+        if (lift.currGoal) Destroy(lift.currGoal);
+        Destroy(lift.gameObject);
+    }
+
+    public static void DestroyInitialForklifts()
+    {
+        foreach (var forkliftController in _initialForkliftControllers)
+        {
+            Destroy(forkliftController.currGoal);
+            Destroy(forkliftController.gameObject);
+        }
     }
 
     private void FillPallet()
@@ -179,9 +233,10 @@ public class ForkliftController : RobotEntity
         
     }
 
-    public void LowerPallet()
+    public void LowerPallet(bool emptyImmediate = false)
     {
         movePalletUp = false;
+        if (emptyImmediate) EmptyPallet();
         RunDataCollector.LogRoundTrip();
     }
 

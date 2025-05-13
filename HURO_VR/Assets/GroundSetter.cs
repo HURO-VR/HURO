@@ -25,20 +25,30 @@ public class GroundSetter : MonoBehaviour
     {
         // Initialization code
     }
-    
+
+    private float Ytimer = 0;
     private void Update()
     {
         if (OVRInput.Get(OVRInput.RawButton.X))
         {
             timer += Time.deltaTime;
-        }
-        else timer = 0;
+        } else timer = 0;
+
+        if (OVRInput.Get(OVRInput.RawButton.Y)) Ytimer += Time.deltaTime;
+        else Ytimer = 0;
 
         if (timer > 3f)
         {
             timer = 0;
             var anchor = GameObject.Find("LeftHandAnchor");
-            transform.position = new Vector3(transform.position.x, anchor.transform.position.y, transform.position.z);
+            transform.position = new Vector3(anchor.transform.position.x, anchor.transform.position.y, anchor.transform.position.z);
+        }
+
+        if (Ytimer > 3f)
+        {
+            var lateral = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x * 0.3f;
+            if (lateral < 0) transform.localScale *= (1 - lateral);
+            else transform.localScale *= (1 + lateral);
         }
     }
     #endregion

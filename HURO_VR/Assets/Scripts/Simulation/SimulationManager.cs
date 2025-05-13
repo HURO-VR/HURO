@@ -114,6 +114,10 @@ public class SimulationManager : MonoBehaviour
             return;
         if (!initAlgorithm)
             InitAlgorithm();
+        #if UNITY_EDITOR
+        sceneData.UpdateSceneData();
+        #endif
+        
         if (!algorithmRunning)
             return;
 
@@ -123,7 +127,6 @@ public class SimulationManager : MonoBehaviour
 
         if (ShouldStep())
         {
-            sceneData.UpdateSceneData();
             AlgorithmStep();
         }
         RunDataCollector.UpdateRobotData();
@@ -190,6 +193,7 @@ public class SimulationManager : MonoBehaviour
             //OnSimulationStart?.Invoke();
         }
         algorithmRunning = true;
+        hitServerAgain = true;  
         Debug.Log("HURO: Starting simulation");
     }
 
@@ -326,11 +330,11 @@ public class SimulationManager : MonoBehaviour
         foreach (var go in robots_go)
         {
             int i = 0;
-            foreach (var robot in sceneData.robots)
+            foreach (var robot in SceneDataManager.robots)
             {
-                if (go.name == robot.name)
+                if (go.name == robot.name && i < newVelocities.Length)
                 {
-                    go.GetComponent<RobotEntity>().SetVelocity(newVelocities[i][0], newVelocities[i][1]);
+                    go.SetVelocity(newVelocities[i][0], newVelocities[i][1]);
                 }
                 i++;
             }
@@ -400,6 +404,9 @@ public class SimulationManager : MonoBehaviour
         {
             if (hitServerAgain)
             {
+                #if !UNITY_EDITOR
+                sceneData.UpdateSceneData();
+#endif
                 string input = sceneData.GetAlgorithmInput();
                 hitServerAgain = false;
                 RunDataCollector.LogServerHit();

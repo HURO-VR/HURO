@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -19,7 +20,7 @@ public partial class SceneDataManager : MonoBehaviour
     public float robot_radius { get; private set; }
     public Obstacle[] obstacles { get; private set; }
     public Boundary boundary { get; private set; }
-    public Robot[] robots { get; private set; }
+    public static List<Robot> robots { get; private set; } = new List<Robot>();
     private SceneDataOutput output;
 
     /// <summary>
@@ -29,9 +30,7 @@ public partial class SceneDataManager : MonoBehaviour
     public SceneDataOutput LoadOutput()
     {
         output.robot_radius = robot_radius;
-        
-        UpdateRobotGoals();
-        output.robots = robots;
+        output.robots = robots.ToArray();
         output.boundary = boundary;
         output.obstacles = Obstacle.UnpackAbstractions(obstacles);
         return output;
@@ -40,9 +39,9 @@ public partial class SceneDataManager : MonoBehaviour
     private void UpdateRobotGoals()
     {
         var robotControllers = GameObject.FindObjectsByType<RobotEntity>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
-        for (int i = 0; i < robots.Length; i++)
+        for (int i = 0; i < robots.Count; i++)
         {
-            var controller = robotControllers.First(r => r.name == robots[i].name);
+            var controller = robotControllers.FirstOrDefault(r => r.name == robots[i].name);
             if (controller) robots[i].goal = controller.GetGoal();
         }
     }
