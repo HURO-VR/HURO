@@ -14,7 +14,8 @@ public class AudioLibrary : MonoBehaviour
         Tutorial4,
         Tutorial5,
         BackgroundNoise,
-        SimFinsh,
+        SimulationFinish,
+        SimulationStart,
         Beep,
         None
     }

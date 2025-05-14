@@ -57,13 +57,14 @@ public class Tutorial : MonoBehaviour
         {
             simCompleted = true;
             RunDataCollector.UploadLogData();
-            audioLibrary.PlayAudio(AudioLibrary.AudioType.SimFinsh);
+            audioLibrary.PlayAudio(AudioLibrary.AudioType.SimulationFinish);
         }
         else if (RunDataCollector.isLogging) sessionTimer += Time.deltaTime;
     }
 
     public void SetUp()
     {
+        FaceCamera(firstLift.transform);
         Invoke("BreakDownRobot", 7f);
     }
 

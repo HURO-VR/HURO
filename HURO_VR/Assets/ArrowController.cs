@@ -25,8 +25,15 @@ public class ArrowController : MonoBehaviour
 
     private void Enter()
     {
-        OnTrigger?.Invoke();
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - pressDepth, transform.localPosition.z);
+        try
+        {
+            OnTrigger?.Invoke();
+        }
+        catch
+        {
+            
+        }
     }
 
     private void Exit()
