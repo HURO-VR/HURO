@@ -252,13 +252,32 @@ public class ForkliftController : RobotEntity
         emptyPallet.SetActive(true);
     }
 
+    private bool _canBreakDown = true;
+    private bool shouldBreakdown = false;
+    public void NoStuckZoneEnter()
+    {
+        _canBreakDown = false;
+    }
+
+    public void NoStuckZoneExit()
+    {
+        _canBreakDown = true;
+        if (shouldBreakdown) BreakDownForklift();
+    }
+
     public void BreakDownForklift()
     {
+        if (!_canBreakDown)
+        {
+            shouldBreakdown = true;
+            return;
+        };
         isStuck = true;
         body.isKinematic = true;
         body.velocity = Vector3.zero;
         beaconController.SetStuck(isStuck);
         beaconController.FlashBeacons();
+        shouldBreakdown = false;
     }
 
     public override void SetVelocity(float x, float z)
