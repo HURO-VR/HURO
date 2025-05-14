@@ -34,7 +34,6 @@ public class ForkliftController : RobotEntity
     List<Vector3> goalPositions;
     [SerializeField] List<Transform> entryPoints;
     private int goalIndex = 0;
-    private Rigidbody body;
     private BeaconController beaconController;
     GameObject emptyPallet;
     private int emptyPalletIndex = 0;
@@ -42,7 +41,6 @@ public class ForkliftController : RobotEntity
     private Vector3 originalRotation;
     private Vector3 originalPosition;
     private BoxCollider boxCollider;
-    private SphereCollider sphereCollider;
     public bool isStuck { get; private set; }
     
     #endregion

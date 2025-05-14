@@ -32,7 +32,7 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     protected Rigidbody body;
 
-    private SphereCollider sphereCollider;
+    protected SphereCollider sphereCollider;
 
     /// <summary>
     /// Reference to the simulation manager.

@@ -58,6 +58,7 @@ public class Tutorial : MonoBehaviour
             simCompleted = true;
             RunDataCollector.UploadLogData();
             audioLibrary.PlayAudio(AudioLibrary.AudioType.SimulationFinish);
+            SimulationManager.Instance.PauseAlgorithm();
         }
         else if (RunDataCollector.isLogging) sessionTimer += Time.deltaTime;
     }
