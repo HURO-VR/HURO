@@ -148,8 +148,8 @@ public class RobotEntity : MonoBehaviour
     /// <param name="collision">Collision information.</param>
     private void OnCollisionEnter(Collision collision)
     {
-        if (!collision.gameObject.name.ToLower().Contains("floor"))
-            RunDataCollector.AddCollision(gameObject, collision);
+        /*if (!collision.gameObject.name.ToLower().Contains("floor"))
+            RunDataCollector.AddCollision(gameObject, collision);*/
     }
 
     #endregion
