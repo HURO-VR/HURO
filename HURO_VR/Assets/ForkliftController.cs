@@ -161,14 +161,15 @@ public class ForkliftController : RobotEntity
 
     private static ForkliftController[] _initialForkliftControllers;
 
-    public static void ActivateForklift()
+    public static ForkliftController ActivateForklift()
     {
-        GameObject spawn = null;
+        ForkliftController spawn = null;
         int num = FindObjectsByType<ForkliftController>(FindObjectsSortMode.None).Length + 1;
         foreach (var lift in _initialForkliftControllers)
             if (lift.gameObject.activeSelf == false && lift.name.Contains(num.ToString()))
-                spawn = lift.gameObject;
-        if (spawn) spawn.SetActive(true);
+                spawn = lift;
+        if (spawn) spawn.gameObject.SetActive(true);
+        return spawn;
     }
 
     public static void HideForklifts()
@@ -320,7 +321,7 @@ public class ForkliftController : RobotEntity
         if (beaconController == null) return;
         if (beaconController.IsFlashing == false && (base.IsRobotNearby() || base.IsObstacleNearby()))
             beaconController.FlashBeacons();
-        else if (beaconController.IsFlashing == true && !isStuck)
+        else if (beaconController.IsFlashing == true && !isStuck && (!(base.IsRobotNearby() || base.IsObstacleNearby())))
             beaconController.DisableBeacons();
 
     }
