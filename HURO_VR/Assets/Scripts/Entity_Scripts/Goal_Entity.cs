@@ -62,7 +62,7 @@ public class GoalEntity : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (robot == null) return;
-        if (other.gameObject == this.robot.gameObject)
+        if (other.gameObject == this.robot.gameObject && other.isTrigger == false)
         {
             robot.GoalReached();
         }

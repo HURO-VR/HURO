@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UserObstacle : MonoBehaviour
@@ -46,6 +47,16 @@ public class UserObstacle : MonoBehaviour
         Vector3 moveDirection = forward * input.y + right * input.x;
         cameraOffset.position += moveDirection * 1f * Time.deltaTime;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var lift = other.gameObject.GetComponent<ForkliftController>();
+        if (lift != null && other.isTrigger == false)
+        {
+            lift.RepairForklift();
+        }
+    }
+
     #endregion
 
     #region Public Methods

@@ -133,10 +133,6 @@ public class ForkliftController : RobotEntity
             transform.eulerAngles = new Vector3(originalRotation.x, transform.eulerAngles.y, originalRotation.z);
         if (transform.position.y != originalPosition.y)
             transform.position = new Vector3(transform.position.x, originalPosition.y, transform.position.z);
-        if (isStuck && Utils.IsInXZBox(user, transform.position, 0.8f))
-        {
-            RepairForklift();
-        }
         if (CanBreakDown && !timeout && rollDice > 1f)
         {
             Random.InitState(BitConverter.ToInt32(Guid.NewGuid().ToByteArray()));
@@ -287,21 +283,8 @@ public class ForkliftController : RobotEntity
 
     private void OnTriggerEnter(Collider other)
     {
-        /*bool isUser = other.gameObject.GetComponent<UserObstacle>();
-        if (isUser && isStuck)
-        {
-            RepairForklift();
-        }*/
-    }
-
-    private void OnCollisionEnter(Collision other)
-    {
         bool isUser = other.gameObject.GetComponent<UserObstacle>();
-        if (isUser && isStuck)
-        {
-            RepairForklift();
-        }
-        else
+        if (other.isTrigger == false)
         {
             var robot = other.gameObject.GetComponent<ForkliftController>();
             bool isRobot = robot != null ? robot.isStuck : false;
@@ -309,8 +292,8 @@ public class ForkliftController : RobotEntity
             bool isOther = other.gameObject.CompareTag("Obstacle");
             if ((isUser || isOther || isRobot) && isPriority && !isStuck) RunDataCollector.LogCollision();
         }
-
     }
+    
 
     #endregion
 
