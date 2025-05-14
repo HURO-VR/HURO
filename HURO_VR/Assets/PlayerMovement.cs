@@ -63,6 +63,13 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleMovement()
     {
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        {
+            transform.Translate(transform.up * moveSpeed * Time.deltaTime, Space.World);
+        } else if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
+        {
+            transform.Translate(-transform.up * moveSpeed * Time.deltaTime, Space.World);
+        }
         if (Mathf.Abs(transform.position.x) > 10f || Mathf.Abs(transform.position.z) < 10f) return;
         // Get RIGHT thumbstick input for movement
         Vector2 movementInput = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch);
