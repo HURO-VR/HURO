@@ -109,7 +109,7 @@ public class Tutorial : MonoBehaviour
                     var pokes = GameObject.FindObjectsByType<Poke>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                     foreach (var poke in pokes)
                         poke.gameObject.SetActive(true);
-                    clipboardController.transform.position = new Vector3(clipboardController.transform.position.x, Camera.main.transform.position.y - 0.4f, clipboardController.transform.position.z);
+                    clipboardController.transform.position = new Vector3(clipboardController.transform.position.x, Camera.main.transform.position.y - 0.1f, clipboardController.transform.position.z);
                     FaceCamera(clipboardController.transform);
                 }
                 // Start Simulation
