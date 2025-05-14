@@ -74,12 +74,15 @@ public class ClipboardController : MonoBehaviour
     }
 
     private bool left = true;
+    private static int m = 2;
     private void Update()
     {
         if ((velocityMachine.transform.localPosition.x > (3.6f * SimulationManager.sceneScale.localScale.x) && !left) ||
             (velocityMachine.transform.localPosition.x < (3.55f * SimulationManager.sceneScale.localScale.x) && left))
             TurnMachine();
         velocityMachine.velocity = -velocityMachine.transform.up * velocity;
+        if (Input.GetKeyDown(KeyCode.Space))
+            DisplayMachine(m++);
     }
     #endregion
 
