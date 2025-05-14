@@ -63,10 +63,10 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleMovement()
     {
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         {
             transform.Translate(transform.up * moveSpeed * Time.deltaTime, Space.World);
-        } else if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
+        } else if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
         {
             transform.Translate(-transform.up * moveSpeed * Time.deltaTime, Space.World);
         }
