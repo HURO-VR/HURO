@@ -16,6 +16,8 @@ public class AudioLibrary : MonoBehaviour
         BackgroundNoise,
         SimulationFinish,
         StartSimulation,
+        Breakdown,
+        Collision,
         Beep,
         None
     }

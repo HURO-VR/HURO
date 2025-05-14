@@ -89,7 +89,8 @@ public class BeaconController : MonoBehaviour
         {
             foreach (var beacon in beacons)
                 beacon.material = isLit ? originalMaterial : isStuck ? stuckMaterial : collisionMaterial;
-
+            if (isStuck && isLit) AudioLibrary.instance.PlayAudio(AudioLibrary.AudioType.Breakdown, true);
+            else if (isLit) AudioLibrary.instance.PlayAudio(AudioLibrary.AudioType.Collision, true);
             isLit = !isLit;
             yield return new WaitForSeconds(0.5f);
         }
