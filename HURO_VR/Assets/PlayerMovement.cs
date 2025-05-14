@@ -70,7 +70,6 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.Translate(-transform.up * moveSpeed * Time.deltaTime, Space.World);
         }
-        if (Mathf.Abs(transform.position.x) > 10f || Mathf.Abs(transform.position.z) < 10f) return;
         // Get RIGHT thumbstick input for movement
         Vector2 movementInput = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch);
 
@@ -93,6 +92,9 @@ public class PlayerMovement : MonoBehaviour
         // Calculate move direction relative to camera orientation
         Vector3 movement = cameraRight * moveDirection.x + cameraForward * moveDirection.z;
         
+        var result = transform.position + movement;
+        if (Mathf.Abs(result.x) > 10f || Mathf.Abs(result.z) > 10f) return;
+
         // Apply movement
         characterController.Move(movement * moveSpeed * Time.deltaTime);
     }
