@@ -43,10 +43,11 @@ public class Obstacle : Circle, Entity
         this.isDynamic = true;
         
         Renderer renderer = go.GetComponent<Renderer>();
+        var user = go.GetComponent<UserObstacle>();
         if (renderer == null) renderer = go.GetComponentInChildren<Renderer>();
         length = renderer.bounds.size.z;
         width = renderer.bounds.size.x;
-        this.radius = Mathf.Max(width, length) / 2f;
+        this.radius = user ? user.gameObject.GetComponent<CapsuleCollider>().radius : (Mathf.Max(width, length) / 2f);
         this.go = go;
         CreateCircleAbstraction();
         if (circleAbstraction != null) Debug.Log(go.name + " generated " + circleAbstraction.Count + " circles.");
