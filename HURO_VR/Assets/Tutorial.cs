@@ -85,9 +85,9 @@ public class Tutorial : MonoBehaviour
         if (audioLibrary)
                 audioLibrary.PlayAudio(AudioLibrary.AudioType.Tutorial2);
             
-            ForkliftController.ActivateForklift();
+            var lift = ForkliftController.ActivateForklift();
             UserMarkerController.TryActivateMarker(UserMarkerController.MarkerType.Tutorial3);
-            FaceCamera(firstLift.transform);
+            FaceCamera(lift.transform);
             UserMarkerController.OnMarkerHit += type =>
             {
                 if (type == UserMarkerController.MarkerType.Tutorial3)
