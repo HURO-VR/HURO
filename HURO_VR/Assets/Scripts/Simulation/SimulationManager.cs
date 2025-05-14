@@ -96,7 +96,11 @@ public class SimulationManager : MonoBehaviour
         }
         UserMarkerController.OnMarkerHit += (type) =>
         {
-            if (type == UserMarkerController.MarkerType.Tutorial1) algorithmRunning = true;
+            if (type == UserMarkerController.MarkerType.Tutorial1)
+            {
+                algorithmRunning = true;
+                Tutorial.instance.SetUp();
+            }
         };
     }
 

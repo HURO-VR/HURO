@@ -35,6 +35,7 @@ public class ClipboardController : MonoBehaviour
 
     private void Awake()
     {
+        velocity *= SimulationManager.sceneScale.localScale.x;
         var controllers = gameObject.GetComponentsInChildren<IncrementController>();
         foreach (var controller in controllers)
         {
@@ -76,8 +77,8 @@ public class ClipboardController : MonoBehaviour
     private bool left = true;
     private void Update()
     {
-        if ((velocityMachine.transform.localPosition.x > 3.6f && !left) ||
-            (velocityMachine.transform.localPosition.x < 3.55f && left))
+        if ((velocityMachine.transform.localPosition.x > (3.6f * SimulationManager.sceneScale.localScale.x) && !left) ||
+            (velocityMachine.transform.localPosition.x < (3.55f * SimulationManager.sceneScale.localScale.x) && left))
             TurnMachine();
         velocityMachine.velocity = -velocityMachine.transform.up * velocity;
     }

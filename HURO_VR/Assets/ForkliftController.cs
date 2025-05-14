@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Utility;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(BoxCollider))]
@@ -97,10 +98,12 @@ public class ForkliftController : RobotEntity
         }
     }
 
+    private Transform user;
     private void Start()
     {
         base.Start();
         upAmount = 0.94f * SimulationManager.sceneScale.transform.localScale.z;
+        user = GameObject.FindAnyObjectByType<UserObstacle>().transform;
     }
 
     private void RotateGoal(bool reset = true)
@@ -108,6 +111,7 @@ public class ForkliftController : RobotEntity
         Destroy(currGoal);
         currGoal = new GameObject();
         currGoal.name = name + "_Goal";
+        currGoal.layer =  LayerMask.NameToLayer("IgnoreException");
         var entity = currGoal.AddComponent<GoalEntity>();
         
         currGoal.tag = "Goal";
@@ -121,7 +125,7 @@ public class ForkliftController : RobotEntity
     private bool timeout = false;
     private void Update()
     {
-        Random.InitState(Mathf.FloorToInt(Time.time));
+        Random.InitState((int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() % Int32.MaxValue));
         ManagePalletMovement();
         RotateToVelocity();
         ManageBeacons();
@@ -130,15 +134,16 @@ public class ForkliftController : RobotEntity
             transform.eulerAngles = new Vector3(originalRotation.x, transform.eulerAngles.y, originalRotation.z);
         if (transform.position.y != originalPosition.y)
             transform.position = new Vector3(transform.position.x, originalPosition.y, transform.position.z);
+        if (isStuck && Utils.IsInXZBox(user, transform.position, 0.8f))
+        {
+            RepairForklift();
+        }
         if (CanBreakDown && !timeout && rollDice > 1f)
         {
             var ran = Random.Range(0, 20);
             if (ran == 1)
             {
-                isStuck = true;
-                body.isKinematic = true;
-                beaconController.SetStuck(isStuck);
-                beaconController.FlashBeacons();
+                BreakDownForklift();
             }
             rollDice = 0;
         } else if (CanBreakDown && !isStuck && SimulationManager.Instance.IsRunning()) rollDice += Time.deltaTime;
@@ -249,17 +254,50 @@ public class ForkliftController : RobotEntity
         emptyPallet.SetActive(true);
     }
 
+    public void BreakDownForklift()
+    {
+        isStuck = true;
+        body.isKinematic = true;
+        body.velocity = Vector3.zero;
+        beaconController.SetStuck(isStuck);
+        beaconController.FlashBeacons();
+    }
+
+    public override void SetVelocity(float x, float z)
+    {
+        if (isStuck)
+        {
+            body.velocity = Vector3.zero;
+            return;
+        }
+        base.SetVelocity(x, z);
+    }
+
+    public void RepairForklift()
+    {
+        isStuck = false;
+        body.isKinematic = false;
+        beaconController.DisableBeacons();
+        beaconController.SetStuck(isStuck);
+        timeout = true;
+        rollDice = 0;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        /*bool isUser = other.gameObject.GetComponent<UserObstacle>();
+        if (isUser && isStuck)
+        {
+            RepairForklift();
+        }*/
+    }
+
     private void OnCollisionEnter(Collision other)
     {
         bool isUser = other.gameObject.GetComponent<UserObstacle>();
         if (isUser && isStuck)
         {
-            isStuck = false;
-            body.isKinematic = false;
-            beaconController.DisableBeacons();
-            beaconController.SetStuck(isStuck);
-            timeout = true;
-            rollDice = 0;
+            RepairForklift();
         }
         else
         {

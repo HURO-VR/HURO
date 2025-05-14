@@ -3,7 +3,7 @@ using UnityEngine;
 public class UserObstacle : MonoBehaviour
 {
     
-    Transform cameraRig;
+    Transform cameraOffset;
     #region Serialized Variables
     // Add any [SerializeField] variables here if needed
     // Add Headers: [Header("Logging")]
@@ -22,12 +22,12 @@ public class UserObstacle : MonoBehaviour
     #region Unity Methods
     private void Awake()
     {
-        cameraRig = FindAnyObjectByType<OVRCameraRig>()?.transform;
+        cameraOffset = transform.parent;
     }
 
     private void Update()
     {
-        if (cameraRig == null) return;
+        return;
         Vector2 input = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
 
         // Early out if there's no input
@@ -35,16 +35,16 @@ public class UserObstacle : MonoBehaviour
             return;
 
         // Calculate direction relative to camera's forward, ignoring vertical
-        Vector3 forward = cameraRig.transform.forward;
+        Vector3 forward = cameraOffset.transform.forward;
         forward.y = 0;
         forward.Normalize();
 
-        Vector3 right = cameraRig.transform.right;
+        Vector3 right = cameraOffset.transform.right;
         right.y = 0;
         right.Normalize();
 
         Vector3 moveDirection = forward * input.y + right * input.x;
-        cameraRig.position += moveDirection * 1f * Time.deltaTime;
+        cameraOffset.position += moveDirection * 1f * Time.deltaTime;
     }
     #endregion
 

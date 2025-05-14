@@ -20,6 +20,7 @@ public class GroundSetter : MonoBehaviour
     private Renderer floor;
     private Material floorMaterial;
     private float timer;
+    private GameObject cameraOffset;
     #endregion
 
     #region Unity Methods
@@ -27,6 +28,7 @@ public class GroundSetter : MonoBehaviour
     {
         floor = GameObject.Find("Floor").GetComponent<Renderer>();
         floorMaterial = floor.GetComponent<Renderer>().material;
+        cameraOffset = GameObject.Find("CameraOffset");
     }
 
     private float Ytimer = 0;
@@ -63,13 +65,13 @@ public class GroundSetter : MonoBehaviour
             float scaleSpeed = 0.5f; // Adjust for faster/slower scaling
             float scaleFactor = 1 + direction * input * scaleSpeed * Time.deltaTime;
 
-            transform.localScale *= scaleFactor;
+            cameraOffset.transform.position = new Vector3(cameraOffset.transform.position.x, cameraOffset.transform.position.y * scaleFactor, cameraOffset.transform.position.z);
 
             // Optional: Clamp the scale to prevent going too small or too large
             float minScale = 0.05f;
             float maxScale = 1f;
-            transform.localScale = Vector3.Max(Vector3.one * minScale, Vector3.Min(transform.localScale, Vector3.one * maxScale));
-            AudioLibrary.instance.PlayAudio(AudioLibrary.AudioType.Beep);
+            //transform.localScale = Vector3.Max(Vector3.one * minScale, Vector3.Min(transform.localScale, Vector3.one * maxScale));
+            //AudioLibrary.instance.PlayAudio(AudioLibrary.AudioType.Beep);
         } else floor.material.color = Color.gray;
     }
     #endregion

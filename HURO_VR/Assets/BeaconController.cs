@@ -16,7 +16,7 @@ public class BeaconController : MonoBehaviour
     
 
     [Tooltip("Flash interval in seconds.")]
-    [SerializeField] float flashInterval;
+    float flashInterval = 0.5f;
     
     public bool IsFlashing => flashRoutine != null;
     #endregion

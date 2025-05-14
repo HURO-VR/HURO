@@ -161,11 +161,11 @@ public class RobotEntity : MonoBehaviour
     /// </summary>
     /// <param name="x">Velocity component along the x-axis.</param>
     /// <param name="z">Velocity component along the z-axis.</param>
-    public void SetVelocity(float x, float z)
+    public virtual void SetVelocity(float x, float z)
     {
         if (body && !goalReached && !body.isKinematic)
         {
-            velocity = new Vector3(x, 0, z);
+            velocity = new Vector3(x, 0, z) * 1.3f;
         }
         else
         {
