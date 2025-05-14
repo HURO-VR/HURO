@@ -125,7 +125,6 @@ public class ForkliftController : RobotEntity
     private bool timeout = false;
     private void Update()
     {
-        Random.InitState((int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() % Int32.MaxValue));
         ManagePalletMovement();
         RotateToVelocity();
         ManageBeacons();
@@ -140,7 +139,8 @@ public class ForkliftController : RobotEntity
         }
         if (CanBreakDown && !timeout && rollDice > 1f)
         {
-            var ran = Random.Range(0, 20);
+            Random.InitState(BitConverter.ToInt32(Guid.NewGuid().ToByteArray()));
+            var ran = Random.Range(0, 15);
             if (ran == 1)
             {
                 BreakDownForklift();
