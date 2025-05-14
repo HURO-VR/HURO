@@ -181,7 +181,7 @@ public class ForkliftController : RobotEntity
         var floor = GameObject.FindGameObjectWithTag("Floor");
         var numForklifts = FindObjectsByType<ForkliftController>(FindObjectsSortMode.None).Length;
         var index = numForklifts % _initialForkliftControllers.Length;
-        var position = new Vector3((-6.5f + (3 * numForklifts)), 0.244f, 0);
+        var position = new Vector3((-6.5f + (3 * numForklifts)), 0.244f, 0) * SimulationManager.sceneScale.transform.localScale.z;
         var spawn = Instantiate(_initialForkliftControllers[index].gameObject);
         spawn.transform.position = position;
         spawn.transform.eulerAngles = new Vector3(0, 270, 90);

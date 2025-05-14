@@ -49,6 +49,9 @@ public class UserMarkerController : MonoBehaviour
         {
             audioLibrary = GameObject.Find("AudioLibrary").GetComponent<AudioLibrary>();
         }
+
+        var scene = GameObject.Find("Scene");
+        markerBoxSize *= scene.transform.localScale.z;
     }
 
     public void SetMarkerType(MarkerType markerType)

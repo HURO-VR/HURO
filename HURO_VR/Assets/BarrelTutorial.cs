@@ -34,6 +34,11 @@ public class BarrelTutorial : MonoBehaviour
             FindObjectsByType<ClipboardController>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
     }
 
+    private void Start()
+    {
+        robotNearbyDistance *= SimulationManager.sceneScale.transform.localScale.z;
+    }
+
     private bool completed;
     private bool simCompleted;
 
@@ -68,7 +73,8 @@ public class BarrelTutorial : MonoBehaviour
             
             ForkliftController.ActivateForklift();
             var mark = Instantiate(markerController.gameObject);
-            mark.transform.position = new Vector3(5.32000017f, 0.02f, -0.660000026f);
+            mark.transform.localScale *= SimulationManager.sceneScale.transform.localScale.z;
+            mark.transform.position = new Vector3(5.32000017f, 0.02f, -0.660000026f) *  SimulationManager.sceneScale.transform.localScale.z;
             var control = mark.GetComponent<UserMarkerController>();
             control.SetMarkerType(UserMarkerController.MarkerType.Tutorial3);
             UserMarkerController.OnMarkerHit += type =>
@@ -77,7 +83,8 @@ public class BarrelTutorial : MonoBehaviour
                 if (type == UserMarkerController.MarkerType.Tutorial3)
                 {
                     var mark = Instantiate(markerController.gameObject);
-                    mark.transform.position = new Vector3(7.30000019f, 0.02f, -3.25f);
+                    mark.transform.position = new Vector3(7.30000019f, 0.02f, -3.25f) *  SimulationManager.sceneScale.transform.localScale.z;
+                    mark.transform.localScale *= SimulationManager.sceneScale.transform.localScale.z;
                     mark.GetComponent<UserMarkerController>().SetMarkerType(UserMarkerController.MarkerType.Tutorial4);
                     clipboardController.gameObject.SetActive(true);
                     ForkliftController.ActivateForklift();
@@ -86,7 +93,8 @@ public class BarrelTutorial : MonoBehaviour
                 else if (type == UserMarkerController.MarkerType.Tutorial4)
                 {
                     var mark = Instantiate(markerController.gameObject);
-                    mark.transform.position = new Vector3(9.30000019f, 0.02f, -3.25f);
+                    mark.transform.localScale *= SimulationManager.sceneScale.transform.localScale.z;
+                    mark.transform.position = new Vector3(9.30000019f, 0.02f, -3.25f) *  SimulationManager.sceneScale.transform.localScale.z;
                     mark.GetComponent<UserMarkerController>().SetMarkerType(UserMarkerController.MarkerType.StartSimulation);
                     ForkliftController.HideForklifts();
                     ForkliftController.SpawnForklift();

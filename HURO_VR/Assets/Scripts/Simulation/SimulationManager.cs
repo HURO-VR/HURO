@@ -63,6 +63,7 @@ public class SimulationManager : MonoBehaviour
     private float timer = 0f;
     private float totalTime = 0f;
     private int levelIndex = 0;
+    public static Transform sceneScale;
 
     #endregion
     
@@ -82,6 +83,7 @@ public class SimulationManager : MonoBehaviour
         try
         {
             if (!sceneData) sceneData = GetComponent<SceneDataManager>();
+            sceneScale = GameObject.Find("Scene").transform;
             audioLibrary = FindAnyObjectByType<AudioLibrary>();
             remoteScriptExecutor = GetComponent<GoogleCloudServer>();
             remoteScriptExecutor.OnScriptExecutionComplete += OnScriptComplete;
