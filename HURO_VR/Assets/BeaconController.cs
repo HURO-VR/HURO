@@ -72,6 +72,8 @@ public class BeaconController : MonoBehaviour
         {
             StopCoroutine(flashRoutine);
             flashRoutine = null;
+            AudioLibrary.instance.Stop(true);
+            AudioLibrary.instance.PlayAudio(AudioLibrary.AudioType.BackgroundNoise, true);
         }
 
         foreach (var beacon in beacons)

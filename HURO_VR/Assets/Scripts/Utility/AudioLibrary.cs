@@ -72,8 +72,11 @@ public class AudioLibrary : MonoBehaviour
     {
         if (audioClipDictionary.TryGetValue(type, out AudioClipEntry clip))
         {
-            if (!background) audioSource.Stop();
-            if (!background) audioSource.PlayOneShot(clip.clip, clip.volume);
+            if (!background)
+            {
+                audioSource.Stop();
+                audioSource.PlayOneShot(clip.clip, clip.volume);
+            }
             else backgroundAudioSource.PlayOneShot(clip.clip, clip.volume);
         }
         else
@@ -81,13 +84,16 @@ public class AudioLibrary : MonoBehaviour
             Debug.LogWarning($"Audio type {type} not found!");
         }
     }
+    
 
-    public void Stop()
+    public void Stop(bool background = false)
     {
-        if (audioSource != null)
+        if (audioSource != null && !background)
         {
             audioSource.Stop();
         }
+        if (backgroundAudioSource != null && background)
+            backgroundAudioSource.Stop();
     }
 
     public bool IsPlaying()

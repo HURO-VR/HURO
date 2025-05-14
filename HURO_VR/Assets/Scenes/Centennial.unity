@@ -37803,11 +37803,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[6].volume
-      value: 1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[7].volume
-      value: 1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: -6013010202921944925, guid: 1d05ad45c9d5ec9488b0d53fc9a503ce, type: 3}
       propertyPath: audioClips.Array.data[8].volume
