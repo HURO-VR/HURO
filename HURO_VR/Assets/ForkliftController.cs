@@ -100,6 +100,7 @@ public class ForkliftController : RobotEntity
     private void Start()
     {
         base.Start();
+        upAmount = 0.94f * SimulationManager.sceneScale.transform.localScale.z;
     }
 
     private void RotateGoal(bool reset = true)
