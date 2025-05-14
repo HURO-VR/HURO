@@ -86,29 +86,20 @@ public class Tutorial : MonoBehaviour
                 audioLibrary.PlayAudio(AudioLibrary.AudioType.Tutorial2);
             
             ForkliftController.ActivateForklift();
-            var mark = Instantiate(markerController.gameObject);
-            mark.transform.localScale *= SimulationManager.sceneScale.transform.localScale.z;
-            mark.transform.position = new Vector3(-5.32000017f, 0.02f, -0.660000026f);
-            var control = mark.GetComponent<UserMarkerController>();
-            control.SetMarkerType(UserMarkerController.MarkerType.Tutorial3);
+            UserMarkerController.TryActivateMarker(UserMarkerController.MarkerType.Tutorial3);
+            FaceCamera(firstLift.transform);
             UserMarkerController.OnMarkerHit += type =>
             {
-                // Barrel Mark
                 if (type == UserMarkerController.MarkerType.Tutorial3)
                 {
-                    var mark = Instantiate(markerController.gameObject);
-                    mark.transform.position = new Vector3(3.06999993f,1.00484836f,-1.11000001f);
-                    mark.transform.localScale *= SimulationManager.sceneScale.transform.localScale.z;
-                    mark.GetComponent<UserMarkerController>().SetMarkerType(UserMarkerController.MarkerType.Tutorial4);
+                    UserMarkerController.TryActivateMarker(UserMarkerController.MarkerType.Tutorial4);
                     ForkliftController.ActivateForklift();
+                    FaceCamera(firstLift.transform);
                 }
                 // Clipboard Mark
                 else if (type == UserMarkerController.MarkerType.Tutorial4)
                 {
-                    var mark = Instantiate(markerController.gameObject);
-                    mark.transform.localScale *= SimulationManager.sceneScale.transform.localScale.z;
-                    mark.transform.position = new Vector3(7.0f, 0.02f, -4.5f);
-                    mark.GetComponent<UserMarkerController>().SetMarkerType(UserMarkerController.MarkerType.StartSimulation);
+                    UserMarkerController.TryActivateMarker(UserMarkerController.MarkerType.StartSimulation);
                     ForkliftController.HideForklifts();
                     ForkliftController.SpawnForklift();
                     SceneDataManager.Instance.InitSceneData();
@@ -118,8 +109,7 @@ public class Tutorial : MonoBehaviour
                     foreach (var poke in pokes)
                         poke.gameObject.SetActive(true);
                     clipboardController.transform.position = new Vector3(clipboardController.transform.position.x, Camera.main.transform.position.y - 0.4f, clipboardController.transform.position.z);
-                    var cam = FindAnyObjectByType<OVRCameraRig>();
-                    cam.transform.LookAt(clipboardController.transform);
+                    FaceCamera(clipboardController.transform);
                 }
                 // Start Simulation
                 else if (type == UserMarkerController.MarkerType.StartSimulation)
@@ -135,6 +125,18 @@ public class Tutorial : MonoBehaviour
                     clipboardController.gameObject.SetActive(false);
                 }
             };
+    }
+
+    private void FaceCamera(Transform target)
+    {
+        var cam = FindAnyObjectByType<OVRCameraRig>();
+        Vector3 direction = target.transform.position - cam.transform.position;
+        direction.y = 0f; // Ignore vertical difference
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            cam.transform.rotation = Quaternion.Euler(0f, targetRotation.eulerAngles.y, 0f);
+        }
     }
     public float robotNearbyDistance;
     /// <summary>

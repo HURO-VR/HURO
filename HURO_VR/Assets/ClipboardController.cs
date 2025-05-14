@@ -35,7 +35,6 @@ public class ClipboardController : MonoBehaviour
 
     private void Awake()
     {
-        velocity *= SimulationManager.sceneScale.localScale.x;
         var controllers = gameObject.GetComponentsInChildren<IncrementController>();
         foreach (var controller in controllers)
         {

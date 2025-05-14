@@ -164,8 +164,9 @@ public class ForkliftController : RobotEntity
     public static void ActivateForklift()
     {
         GameObject spawn = null;
+        int num = FindObjectsByType<ForkliftController>(FindObjectsSortMode.None).Length + 1;
         foreach (var lift in _initialForkliftControllers)
-            if (lift.gameObject.activeSelf == false)
+            if (lift.gameObject.activeSelf == false && lift.name.Contains(num.ToString()))
                 spawn = lift.gameObject;
         if (spawn) spawn.SetActive(true);
     }

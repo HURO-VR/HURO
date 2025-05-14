@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -31,6 +32,7 @@ public class UserMarkerController : MonoBehaviour
     public static event Action<MarkerType> OnMarkerHit;
     [FormerlySerializedAs("markerBox")] public float markerBoxSize;
     [SerializeField] private MarkerType markerType;
+    static List<UserMarkerController> markers = new List<UserMarkerController>();
     #endregion
 
     #region Private Variables
@@ -49,9 +51,10 @@ public class UserMarkerController : MonoBehaviour
         {
             audioLibrary = GameObject.Find("AudioLibrary").GetComponent<AudioLibrary>();
         }
-
+        markers.Add(this);
         var scene = GameObject.Find("Scene");
-        markerBoxSize *= scene.transform.localScale.z;
+        Debug.Log($"Added marker. Now: {markers.Count}");
+        if (markerType != MarkerType.Tutorial1) gameObject.SetActive(false);
     }
 
     public void SetMarkerType(MarkerType markerType)
@@ -65,6 +68,7 @@ public class UserMarkerController : MonoBehaviour
 
     private void Update()
     {
+        if (user != null)
         if (Utility.Utils.IsInXZBox(user.transform, transform.position, markerBoxSize))
         {
             if (audioType != null)
@@ -73,6 +77,17 @@ public class UserMarkerController : MonoBehaviour
                 OnMarkerHit?.Invoke(markerType);
             gameObject.SetActive(false);
         }
+    }
+
+    public static UserMarkerController TryActivateMarker(MarkerType markerType)
+    {
+        foreach  (var marker in markers)
+            if (markerType == marker.markerType)
+            {
+                marker.gameObject.SetActive(true);
+                return marker;
+            }
+        return null;
     }
     #endregion
 

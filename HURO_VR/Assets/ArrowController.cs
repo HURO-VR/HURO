@@ -26,12 +26,12 @@ public class ArrowController : MonoBehaviour
     private void Enter()
     {
         OnTrigger?.Invoke();
-        transform.position = new Vector3(transform.position.x, transform.position.y - pressDepth, transform.position.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - pressDepth, transform.localPosition.z);
     }
 
     private void Exit()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y + pressDepth, transform.position.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + pressDepth, transform.localPosition.z);
     }
 
     private void OnTriggerEnter(Collider other)
