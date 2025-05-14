@@ -13,6 +13,7 @@ public class ArrowController : MonoBehaviour
     }
     public event Action OnTrigger;
     private float pressDepth = 0.0048f;
+    private bool canPress = true;
     public Type type {get; private set;} 
     
     [SerializeField] private string triggerTag = "IndexFinger";
@@ -23,9 +24,17 @@ public class ArrowController : MonoBehaviour
         if (name.ToLower().Contains("down")) type = Type.Decrement;
     }
 
+    private void CanPress()
+    {
+        canPress = true;
+    }
+
     private void Enter()
     {
+        if (canPress == false) return;
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - pressDepth, transform.localPosition.z);
+        canPress = false;
+        Invoke("CanPress", 0.2f);
         try
         {
             OnTrigger?.Invoke();
