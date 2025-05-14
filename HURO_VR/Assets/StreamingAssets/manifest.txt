@@ -2,8 +2,6 @@ google-services-desktop.json
 google-services-desktop.json.meta
 google_compute_engine
 google_compute_engine.meta
-google_compute_engine.pub
-google_compute_engine.pub.meta
 manifest.txt.meta
 RuntimeActionBindings.json
 RuntimeActionBindings.json.meta

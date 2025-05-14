@@ -17,13 +17,16 @@ public class GroundSetter : MonoBehaviour
 
     #region Private Variables
 
+    private Renderer floor;
+    private Material floorMaterial;
     private float timer;
     #endregion
 
     #region Unity Methods
     private void Start()
     {
-        // Initialization code
+        floor = GameObject.Find("Floor").GetComponent<Renderer>();
+        floorMaterial = floor.GetComponent<Renderer>().material;
     }
 
     private float Ytimer = 0;
@@ -46,10 +49,28 @@ public class GroundSetter : MonoBehaviour
 
         if (Ytimer > 3f)
         {
-            var lateral = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x * 0.3f;
-            if (lateral < 0) transform.localScale *= (1 - lateral);
-            else transform.localScale *= (1 + lateral);
-        }
+            floor.material.color = Color.red;
+            float input = Mathf.Max(
+                Mathf.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x),
+                Mathf.Abs(OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).x)
+            );
+
+            float direction = Mathf.Sign(
+                OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x +
+                OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).x
+            );
+
+            float scaleSpeed = 0.5f; // Adjust for faster/slower scaling
+            float scaleFactor = 1 + direction * input * scaleSpeed * Time.deltaTime;
+
+            transform.localScale *= scaleFactor;
+
+            // Optional: Clamp the scale to prevent going too small or too large
+            float minScale = 0.05f;
+            float maxScale = 1f;
+            transform.localScale = Vector3.Max(Vector3.one * minScale, Vector3.Min(transform.localScale, Vector3.one * maxScale));
+            AudioLibrary.instance.PlayAudio(AudioLibrary.AudioType.Beep);
+        } else floor.material.color = Color.gray;
     }
     #endregion
 

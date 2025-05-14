@@ -15,6 +15,7 @@ public class AudioLibrary : MonoBehaviour
         Tutorial5,
         BackgroundNoise,
         SimFinsh,
+        Beep,
         None
     }
 
@@ -35,14 +36,10 @@ public class AudioLibrary : MonoBehaviour
     private AudioSource audioSource;
     private AudioSource backgroundAudioSource;
     public List<AudioType> audioOnStart = new List<AudioType>();
-
+    public static AudioLibrary instance;
     private void Awake()
     {
-        //if (Instance == null)
-        //{
-        //    Instance = this;
-        //    DontDestroyOnLoad(gameObject);
-        //}
+        if (instance == null) instance = this;
         //else
         //{
         //    Destroy(gameObject);
