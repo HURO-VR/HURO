@@ -92,7 +92,9 @@ public class RobotEntity : MonoBehaviour
         algorithmRunner = FindAnyObjectByType<SimulationManager>();
         body = GetComponent<Rigidbody>();
         sphereCollider = GetComponent<SphereCollider>();
+        var scene = GameObject.Find("Scene");
         gameObject.tag = "Robot";
+        robotNearbyDistance *= scene.transform.localScale.z;
     }
 
     /// <summary>
