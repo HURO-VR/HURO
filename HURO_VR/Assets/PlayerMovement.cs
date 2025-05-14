@@ -63,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleMovement()
     {
+        if (Mathf.Abs(transform.position.x) > 10f || Mathf.Abs(transform.position.z) < 10f) return;
         // Get RIGHT thumbstick input for movement
         Vector2 movementInput = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch);
 
