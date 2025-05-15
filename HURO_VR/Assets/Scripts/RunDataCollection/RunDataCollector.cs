@@ -75,14 +75,51 @@ public static class RunDataCollector
         Debug.Log("HURO: Initalized Data Collector");
     }
 
-    public static void UploadLogData()
+    private static string deviceId = "One";
+    private static string uid;
+    private static string name;
+    private static CentennialData bestCentennialData;
+    public static void UploadLogData(bool first)
     {
         if (!isCentennialData) return;
-        centennialData.timeCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        db.UploadMetadata($"centennial/{centennialData.timeCreated}", centennialData.ToJson(), b =>
+        if (first)
+        db.GetFirestoreCollection("centennial", list =>
         {
-            Debug.Log("Centennial Data Upload complete.");
+            Debug.Log($"Checking list of {list.Count} centennial data");
+            foreach (var item in list)
+            {
+                if (item.ContainsKey("deviceId") &&  item.ContainsKey("uid") &&  item.ContainsKey("maxVelocity"))
+                if (item["deviceId"].ToString() == deviceId && item["maxVelocity"].ToString() == (-1).ToString())
+                {
+                    centennialData.name = item["name"].ToString();
+                    uid = item["uid"].ToString();
+                    centennialData.timeCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    name = centennialData.name;
+                    centennialData.numGames = 1;
+                    centennialData.uid = uid;
+                    db.UploadMetadata($"centennial/{item["uid"].ToString()}", centennialData.ToJson(), b =>
+                    {
+                        Debug.Log($"Centennial Data {uid} Upload complete.");
+                    });
+                    bestCentennialData = centennialData.Copy();
+                    centennialData.Reset();
+                }
+            }
         });
+        else 
+        {
+            if (centennialData.roundTrips > bestCentennialData.roundTrips) bestCentennialData = centennialData.Copy();
+            else if (centennialData.roundTrips == bestCentennialData.roundTrips && centennialData.collisions < bestCentennialData.collisions)
+                bestCentennialData = centennialData.Copy();
+            bestCentennialData.name = name;
+            bestCentennialData.numGames = Tutorial.numSessionsCompleted;
+            bestCentennialData.uid = uid;
+            db.UploadMetadata($"centennial/{uid}", bestCentennialData.ToJson(), b =>
+            {
+                Debug.Log($"Centennial Data Upload complete. numCompleted: {bestCentennialData.numGames}");
+                centennialData.Reset();
+            });
+        }
         isLogging = false;
     }
 
@@ -122,6 +159,8 @@ public static class RunDataCollector
         runMetadata.serverHits++;
     }
     public static void StartLogging() => isLogging = true;
+    public static void StopLogging() => isLogging = false;
+    
     public static void LogCollision() {
         if (isLogging)
         {
@@ -129,6 +168,7 @@ public static class RunDataCollector
             Debug.Log($"Logged collision. Now: {centennialData.collisions}");
         }
     }
+    
     public static void LogRoundTrip() {
         if (isLogging) centennialData.roundTrips++;
     }

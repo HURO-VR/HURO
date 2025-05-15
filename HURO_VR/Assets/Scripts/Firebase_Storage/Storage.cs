@@ -142,15 +142,15 @@ public class Storage : MonoBehaviour
         OnComplete(await Task.FromResult(simulationMetaDatas));
     }
 
-    public async void GetFirestoreCollection(string path, Action<List<DocumentSnapshot>> OnComplete)
+    public async void GetFirestoreCollection(string path, Action<List<Dictionary<string, object>>> OnComplete)
     {
         Query simulationQuery = firestore.Collection(path);
         await simulationQuery.GetSnapshotAsync().ContinueWithOnMainThread((task) => {
             QuerySnapshot snapshot = task.Result;
-            List<DocumentSnapshot> data = new();
+            List<Dictionary<string, object>> data = new();
             foreach (DocumentSnapshot documentSnapshot in snapshot.Documents)
             {
-                data.Add(documentSnapshot);
+                data.Add(documentSnapshot.ToDictionary());
             }
             OnComplete(data);
         });

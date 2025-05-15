@@ -63,10 +63,10 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleMovement()
     {
-        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) && transform.position.y < 10f)
         {
             transform.Translate(transform.up * moveSpeed * Time.deltaTime, Space.World);
-        } else if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
+        } else if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch) && transform.position.y > .3f)
         {
             transform.Translate(-transform.up * moveSpeed * Time.deltaTime, Space.World);
         }
@@ -106,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
         
         // Only use horizontal input for rotation
         float horizontalInput = rotationInput.x;
-        
+        float verticalInput = rotationInput.y;
         // Skip if no significant input
         if (Mathf.Abs(horizontalInput) < 0.1f)
         {
@@ -133,6 +133,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // Smooth turning logic
             float rotationAmount = horizontalInput * rotationSpeed * Time.deltaTime;
+            float vertRotateAmount = verticalInput * rotationSpeed * Time.deltaTime;
             playerTransform.Rotate(0, rotationAmount, 0);
         }
     }

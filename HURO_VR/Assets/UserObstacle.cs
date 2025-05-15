@@ -51,7 +51,7 @@ public class UserObstacle : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var lift = other.gameObject.GetComponent<ForkliftController>();
-        if (lift != null && other.isTrigger == false)
+        if (lift != null && other.isTrigger == false && lift.isStuck == true)
         {
             lift.RepairForklift();
         }

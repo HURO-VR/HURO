@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utility;
@@ -134,7 +135,7 @@ public class ForkliftController : RobotEntity
         if (CanBreakDown && !timeout && rollDice > 1f)
         {
             Random.InitState(BitConverter.ToInt32(Guid.NewGuid().ToByteArray()));
-            var ran = Random.Range(0, 15);
+            var ran = Random.Range(0, 12);
             if (ran == 1)
             {
                 BreakDownForklift();
@@ -165,13 +166,21 @@ public class ForkliftController : RobotEntity
         if (spawn) spawn.gameObject.SetActive(true);
         return spawn;
     }
-
+    
     public static void HideForklifts()
     {
-        foreach (var forkliftController in _initialForkliftControllers)
+        var lifts =  FindObjectsByType<ForkliftController>(FindObjectsSortMode.None);
+        foreach (var forkliftController in lifts)
         {
-            forkliftController.gameObject.SetActive(false);
-            forkliftController.transform.position = new Vector3(30, forkliftController.transform.position.y, 30);
+            if (_initialForkliftControllers.ToList().Contains(forkliftController))
+            {
+                forkliftController.gameObject.SetActive(false);
+                forkliftController.transform.position = new Vector3(30, forkliftController.transform.position.y, 30);
+            } else
+            {
+                forkliftController.gameObject.SetActive(false);
+                Destroy(forkliftController.gameObject);
+            }
         }
     }
 
@@ -295,6 +304,7 @@ public class ForkliftController : RobotEntity
         beaconController.DisableBeacons();
         beaconController.SetStuck(isStuck);
         timeout = true;
+        RunDataCollector.LogCollision();
         rollDice = 0;
     }
 
@@ -307,7 +317,7 @@ public class ForkliftController : RobotEntity
             bool isRobot = robot != null ? robot.isStuck : false;
             bool isPriority = robot != null ? this.ID > robot.ID : true;
             bool isOther = other.gameObject.CompareTag("Obstacle");
-            if ((isUser || isOther || isRobot) && isPriority && !isStuck) RunDataCollector.LogCollision();
+            //if ((isUser || isOther || isRobot) && isPriority && !isStuck) RunDataCollector.LogCollision();
         }
     }
     

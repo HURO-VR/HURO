@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -41,26 +42,52 @@ public class Tutorial : MonoBehaviour
         robotNearbyDistance *= SimulationManager.sceneScale.transform.localScale.z;
     }
 
-    private bool completed;
-    private bool simCompleted;
+    private bool completedTutorial;
     private bool setUp = false;
-
+    public static int numSessionsCompleted = 0;
+    private bool tenSecWarning = false;
     private void Update()
     {
-        if (!completed && setUp && !firstLift.isStuck)
+        if (!completedTutorial && setUp && !firstLift.isStuck)
         {
             InstantiateMarkers();
-            completed = true;
+            completedTutorial = true;
         }
         
-        if (sessionTimer >= sessionLength && !simCompleted)
+        if (sessionTimer >= sessionLength)
         {
-            simCompleted = true;
-            RunDataCollector.UploadLogData();
-            audioLibrary.PlayAudio(AudioLibrary.AudioType.SimulationFinish);
+            sessionTimer = 0;
+            tenSecWarning = false;
             SimulationManager.Instance.PauseAlgorithm();
+            try
+            {
+                RunDataCollector.UploadLogData(numSessionsCompleted == 1);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
+            
+            if (numSessionsCompleted == 1) audioLibrary.PlayAudio(AudioLibrary.AudioType.FirstRound_Complete); // First
+            //if (numSessionsCompleted == 2) audioLibrary.PlayAudio(AudioLibrary.AudioType.SecondRound_Complete);
+            if (numSessionsCompleted == 3)
+            {
+                ForkliftController.HideForklifts();
+                audioLibrary.PlayAudio(AudioLibrary.AudioType.LastRound_Complete);
+                return;
+            }
+            Time.timeScale = 1;
+            SimulationParameterMark();
         }
-        else if (RunDataCollector.isLogging) sessionTimer += Time.deltaTime;
+        else if (RunDataCollector.isLogging)
+        {
+            sessionTimer += Time.deltaTime;
+            if (sessionTimer >= 50 && !tenSecWarning)
+            {
+                AudioLibrary.instance.PlayAudio(AudioLibrary.AudioType.TenSecondWarning);
+                tenSecWarning = true;
+            }
+        }
     }
 
     public void SetUp()
@@ -101,32 +128,74 @@ public class Tutorial : MonoBehaviour
                 // Clipboard Mark
                 else if (type == UserMarkerController.MarkerType.Tutorial4)
                 {
-                    UserMarkerController.TryActivateMarker(UserMarkerController.MarkerType.StartSimulation);
-                    ForkliftController.HideForklifts();
-                    ForkliftController.SpawnForklift();
-                    SceneDataManager.Instance.InitSceneData();
-                    SimulationManager.Instance.PauseAlgorithm();
-                    clipboardController.gameObject.SetActive(true);
-                    var pokes = GameObject.FindObjectsByType<Poke>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-                    foreach (var poke in pokes)
-                        poke.gameObject.SetActive(true);
-                    clipboardController.transform.position = new Vector3(clipboardController.transform.position.x, Camera.main.transform.position.y - 0.1f, clipboardController.transform.position.z);
-                    FaceCamera(clipboardController.transform);
+                    SimulationParameterMark();
                 }
                 // Start Simulation
                 else if (type == UserMarkerController.MarkerType.StartSimulation)
                 {
+                    FindAnyObjectByType<UserObstacle>().GetComponent<CapsuleCollider>().isTrigger = false;
                     ForkliftController.CanBreakDown = true;
-                    ForkliftController.DestroyInitialForklifts();
                     SceneDataManager.Instance.InitSceneData();
                     SimulationManager.Instance.StartAlgorithm();
                     RunDataCollector.StartLogging();
+                    Time.timeScale = 2;
                     var pokes = GameObject.FindObjectsByType<Poke>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                     foreach (var poke in pokes)
                         poke.gameObject.SetActive(false);
                     clipboardController.gameObject.SetActive(false);
+                    numSessionsCompleted++;
                 }
             };
+    }
+
+    public void SimulationParameterMark()
+    {
+        var mark = UserMarkerController.TryActivateMarker(UserMarkerController.MarkerType.StartSimulation);
+        if (numSessionsCompleted == 0) mark.SetAudioType(AudioLibrary.AudioType.FirstRound_Start);
+        //if (numSessionsCompleted == 1) mark.SetAudioType(AudioLibrary.AudioType.SecondRound_Start);
+        if (numSessionsCompleted == 2) mark.SetAudioType(AudioLibrary.AudioType.LastRound_Start);
+        
+        ForkliftController.HideForklifts();
+        for (int i = 0; i < ClipboardController.numMachines; i++)
+            ForkliftController.SpawnForklift();
+        
+        SceneDataManager.Instance.InitSceneData();
+        SimulationManager.Instance.PauseAlgorithm();
+        clipboardController.gameObject.SetActive(true);
+        var pokes = GameObject.FindObjectsByType<Poke>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var poke in pokes)
+            poke.gameObject.SetActive(true);
+        if (numSessionsCompleted > 0)
+        {
+            float markY = mark.transform.position.y;
+            Vector3 targetPos = Camera.main.transform.position + Camera.main.transform.forward * 0.7f;
+            Vector3 markTargetPos = Camera.main.transform.position + Camera.main.transform.forward * 2f;
+            targetPos.y = Camera.main.transform.position.y - 0.1f;
+            clipboardController.transform.position = targetPos;
+            
+            Vector3 direction = Camera.main.transform.position - clipboardController.transform.position;
+            direction.y = 0; // Ignore vertical difference
+            if (direction != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                Vector3 eulerAngles = targetRotation.eulerAngles;
+                eulerAngles.y += 90;
+                clipboardController.transform.eulerAngles = eulerAngles;
+            }
+
+            markTargetPos.y = markY;
+            mark.transform.position = markTargetPos;
+
+        } else
+        {
+            clipboardController.transform.position = new Vector3(
+                clipboardController.transform.position.x,
+                Camera.main.transform.position.y - 0.1f,
+                clipboardController.transform.position.z);
+        }
+        
+        FaceCamera(clipboardController.transform);
+        FindAnyObjectByType<UserObstacle>().GetComponent<CapsuleCollider>().isTrigger = true;
     }
 
     private void FaceCamera(Transform target)

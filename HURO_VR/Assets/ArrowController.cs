@@ -13,6 +13,7 @@ public class ArrowController : MonoBehaviour
     }
     public event Action OnTrigger;
     private float pressDepth = 0.0048f;
+    private float normalDepth;
     private bool canPress = true;
     public Type type {get; private set;} 
     
@@ -22,6 +23,7 @@ public class ArrowController : MonoBehaviour
     {
         if (name.ToLower().Contains("up")) type = Type.Increment;
         if (name.ToLower().Contains("down")) type = Type.Decrement;
+        normalDepth = transform.localPosition.y;
     }
 
     private void CanPress()
@@ -32,7 +34,7 @@ public class ArrowController : MonoBehaviour
     private void Enter()
     {
         if (canPress == false) return;
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - pressDepth, transform.localPosition.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, normalDepth - pressDepth, transform.localPosition.z);
         canPress = false;
         Invoke("CanPress", 0.2f);
         try
@@ -47,7 +49,7 @@ public class ArrowController : MonoBehaviour
 
     private void Exit()
     {
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + pressDepth, transform.localPosition.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, normalDepth, transform.localPosition.z);
     }
 
     private void OnTriggerEnter(Collider other)
