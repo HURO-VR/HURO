@@ -14,10 +14,15 @@ public class AudioLibrary : MonoBehaviour
         Tutorial4,
         Tutorial5,
         BackgroundNoise,
-        SimulationFinish,
-        StartSimulation,
         Breakdown,
         Collision,
+        FirstRound_Start,
+        FirstRound_Complete,
+        SecondRound_Start,
+        SecondRound_Complete,
+        LastRound_Start,
+        LastRound_Complete,
+        TenSecondWarning,
         Beep,
         None
     }

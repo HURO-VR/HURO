@@ -66,17 +66,27 @@ public class UserMarkerController : MonoBehaviour
                 audioType = (AudioLibrary.AudioType)type;
     }
 
+    public void SetAudioType(AudioLibrary.AudioType audioType)
+    {
+        this.audioType = audioType;
+    }
+
     private void Update()
     {
         if (user != null)
         if (Utility.Utils.IsInXZBox(user.transform, transform.position, markerBoxSize))
         {
-            if (audioType != null)
+            if (audioType != null && audioType != AudioLibrary.AudioType.None)
                 audioLibrary.PlayAudio(audioType);
             if (markerType != null) 
                 OnMarkerHit?.Invoke(markerType);
             gameObject.SetActive(false);
         }
+    }
+
+    public void DisableAudio()
+    {
+        audioType = AudioLibrary.AudioType.None;
     }
 
     public static UserMarkerController TryActivateMarker(MarkerType markerType)
