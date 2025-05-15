@@ -76,7 +76,9 @@ public class Tutorial : MonoBehaviour
                 audioLibrary.PlayAudio(AudioLibrary.AudioType.LastRound_Complete);
                 return;
             }
+            #if UNITY_EDITOR
             Time.timeScale = 1;
+            #endif
             SimulationParameterMark();
         }
         else if (RunDataCollector.isLogging)
@@ -138,7 +140,9 @@ public class Tutorial : MonoBehaviour
                     SceneDataManager.Instance.InitSceneData();
                     SimulationManager.Instance.StartAlgorithm();
                     RunDataCollector.StartLogging();
+                    #if UNITY_EDITOR
                     Time.timeScale = 2;
+                    #endif
                     var pokes = GameObject.FindObjectsByType<Poke>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                     foreach (var poke in pokes)
                         poke.gameObject.SetActive(false);
@@ -162,14 +166,23 @@ public class Tutorial : MonoBehaviour
         SceneDataManager.Instance.InitSceneData();
         SimulationManager.Instance.PauseAlgorithm();
         clipboardController.gameObject.SetActive(true);
-        var pokes = GameObject.FindObjectsByType<Poke>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (var poke in pokes)
-            poke.gameObject.SetActive(true);
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.name == "XRHand_IndexTip" && obj.GetComponent<SphereCollider>() == null)
+            {
+                var tip = obj.AddComponent<SphereCollider>();
+                tip.isTrigger = true;
+                tip.radius = 0.006f;
+                obj.tag = "IndexFinger";
+            }
+        }
+        
         if (numSessionsCompleted > 0)
         {
             float markY = mark.transform.position.y;
             Vector3 targetPos = Camera.main.transform.position + Camera.main.transform.forward * 0.7f;
-            Vector3 markTargetPos = Camera.main.transform.position + Camera.main.transform.forward * 2f;
+            Vector3 markTargetPos = Camera.main.transform.position + Camera.main.transform.forward * 2.5f;
             targetPos.y = Camera.main.transform.position.y - 0.1f;
             clipboardController.transform.position = targetPos;
             

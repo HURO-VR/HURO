@@ -75,7 +75,7 @@ public static class RunDataCollector
         Debug.Log("HURO: Initalized Data Collector");
     }
 
-    private static string deviceId = "One";
+    private static int headsetId = 1;
     private static string uid;
     private static string name;
     private static CentennialData bestCentennialData;
@@ -88,8 +88,8 @@ public static class RunDataCollector
             Debug.Log($"Checking list of {list.Count} centennial data");
             foreach (var item in list)
             {
-                if (item.ContainsKey("deviceId") &&  item.ContainsKey("uid") &&  item.ContainsKey("maxVelocity"))
-                if (item["deviceId"].ToString() == deviceId && item["maxVelocity"].ToString() == (-1).ToString())
+                if (item.ContainsKey("headsetId") &&  item.ContainsKey("uid") &&  item.ContainsKey("maxVelocity"))
+                if (item["headsetId"].ToString() == headsetId.ToString() && item["maxVelocity"].ToString() == (-1).ToString())
                 {
                     centennialData.name = item["name"].ToString();
                     uid = item["uid"].ToString();
@@ -103,6 +103,7 @@ public static class RunDataCollector
                     });
                     bestCentennialData = centennialData.Copy();
                     centennialData.Reset();
+                    break;
                 }
             }
         });
