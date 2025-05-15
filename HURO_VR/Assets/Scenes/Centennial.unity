@@ -10605,13 +10605,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 624129841}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0.09447756, y: 0.2571983, z: 0.24572754}
+  m_LocalRotation: {x: 0.4127946, y: 0.1942724, z: -0.09059069, w: 0.88524127}
+  m_LocalPosition: {x: -5.2, y: 0.2571983, z: -5.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: 24.755, z: 0}
 --- !u!1 &625349153
 GameObject:
   m_ObjectHideFlags: 0
@@ -12903,6 +12903,10 @@ PrefabInstance:
     - target: {fileID: -4470532959351810160, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
       propertyPath: markerType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -4470532959351810160, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
+      propertyPath: markerBoxSize
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 3699931218440519552, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19305,6 +19309,10 @@ PrefabInstance:
       propertyPath: markerType
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: -4470532959351810160, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
+      propertyPath: markerBoxSize
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 3699931218440519552, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.23
@@ -22501,6 +22509,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1422452472}
     m_Modifications:
+    - target: {fileID: -4470532959351810160, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
+      propertyPath: markerBoxSize
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 3699931218440519552, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.215487
@@ -24849,8 +24861,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eba58a349bcca914aa365ebd0dc72dad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  rotationSpeed: 60
+  moveSpeed: 2.2
+  rotationSpeed: 30
   cameraRig: {fileID: 1386574829}
   useSnapTurning: 0
   snapTurnAngle: 30
@@ -25142,6 +25154,100 @@ Transform:
   m_Children: []
   m_Father: {fileID: 137127075}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1412430567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1412430569}
+  - component: {fileID: 1412430568}
+  m_Layer: 0
+  m_Name: Directional Light (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1412430568
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412430567}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 1
+  m_Shape: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &1412430569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412430567}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.16035958, y: -0.8385296, z: 0.3910125, w: 0.3438926}
+  m_LocalPosition: {x: 8.3, y: 0.2571983, z: 13.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: -135.402, z: 0}
 --- !u!1 &1413843213
 GameObject:
   m_ObjectHideFlags: 0
@@ -27783,6 +27889,10 @@ PrefabInstance:
     - target: {fileID: -4470532959351810160, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
       propertyPath: markerType
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -4470532959351810160, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
+      propertyPath: markerBoxSize
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 3699931218440519552, guid: 3a85a2b7f86511d44b12543c209c1531, type: 3}
       propertyPath: m_LocalPosition.x
@@ -38134,6 +38244,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 624129843}
+  - {fileID: 1412430569}
   - {fileID: 212549542}
   - {fileID: 230590708}
   - {fileID: 447735551}

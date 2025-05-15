@@ -19,6 +19,8 @@ public class InfoButton : MonoBehaviour
     // Add public variables here
     #endregion
 
+    private float initY;
+
     #region Private Variables
     private float pressDepth = 0.0048f;
 
@@ -29,6 +31,7 @@ public class InfoButton : MonoBehaviour
     private void Awake()
     {
         infoButtons.Add(this);
+        initY = transform.localPosition.y;
     }
 
     private void Start()
@@ -90,12 +93,12 @@ public class InfoButton : MonoBehaviour
         if (info.isPlaying) return;
         InfoButton.StopAll();
         info.Play();
-        transform.position = new Vector3(transform.position.x, transform.position.y - pressDepth, transform.position.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, initY, transform.localPosition.z);
     }
 
     private void Exit()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y + pressDepth, transform.position.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, initY + pressDepth, transform.localPosition.z);
     }
     #endregion
 }

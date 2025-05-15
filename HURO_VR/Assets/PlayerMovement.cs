@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Camera = GLTFast.Schema.Camera;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -63,13 +64,6 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleMovement()
     {
-        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) && transform.position.y < 10f)
-        {
-            transform.Translate(transform.up * moveSpeed * Time.deltaTime, Space.World);
-        } else if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch) && transform.position.y > .3f)
-        {
-            transform.Translate(-transform.up * moveSpeed * Time.deltaTime, Space.World);
-        }
         // Get RIGHT thumbstick input for movement
         Vector2 movementInput = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch);
 
@@ -101,9 +95,18 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleRotation()
     {
+        return;
         // Get LEFT thumbstick input for rotation
         Vector2 rotationInput = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
-        
+        if (Mathf.Max(Mathf.Abs(rotationInput.y), Mathf.Abs(rotationInput.x)) == Mathf.Abs(rotationInput.y) && rotationInput.y > .3f && transform.position.y < 10f)
+        {
+            transform.Translate(transform.up * moveSpeed * Time.deltaTime, Space.World);
+        } else if (Mathf.Max(Mathf.Abs(rotationInput.y), Mathf.Abs(rotationInput.x)) == Mathf.Abs(rotationInput.y) && rotationInput.y < -.3f && transform.position.y > .3f)
+        {
+            transform.Translate(-transform.up * moveSpeed * Time.deltaTime, Space.World);
+        }
+
+        return;
         // Only use horizontal input for rotation
         float horizontalInput = rotationInput.x;
         float verticalInput = rotationInput.y;

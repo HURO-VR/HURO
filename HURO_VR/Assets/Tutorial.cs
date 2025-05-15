@@ -173,7 +173,7 @@ public class Tutorial : MonoBehaviour
             {
                 var tip = obj.AddComponent<SphereCollider>();
                 tip.isTrigger = true;
-                tip.radius = 0.006f;
+                tip.radius = 0.008f;
                 obj.tag = "IndexFinger";
             }
         }

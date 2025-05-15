@@ -135,7 +135,7 @@ public class ForkliftController : RobotEntity
         if (CanBreakDown && !timeout && rollDice > 1f)
         {
             Random.InitState(BitConverter.ToInt32(Guid.NewGuid().ToByteArray()));
-            var ran = Random.Range(0, 12);
+            var ran = Random.Range(0, 10);
             if (ran == 1)
             {
                 BreakDownForklift();
@@ -274,7 +274,7 @@ public class ForkliftController : RobotEntity
 
     public void BreakDownForklift()
     {
-        if (!_canBreakDown)
+        if (!_canBreakDown || (Mathf.Abs(transform.position.x) > 10f || Mathf.Abs(transform.position.z) > 10f))
         {
             shouldBreakdown = true;
             return;
